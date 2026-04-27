@@ -1,42 +1,67 @@
-_<p style="text-align: center;">Project deployment and hosting</p>_
+# Deployment & Infrastructure
 
-
+CivicTechJobs is deployed on Hack for LA's Incubator AWS account (035866691871, `us-west-2`), managed by the DevOps Community of Practice. The shared infrastructure (ECS Fargate cluster, RDS, Route53) is provisioned via Terraform in the [hackforla/incubator](https://github.com/hackforla/incubator/tree/main/terraform/projects/civic-tech-jobs) repository.
 
 ![CTJ Infrastructure Diagram](../assets/ctj-infra-diagram.png)
 
+## Topology
 
-### Summary
-CivicTechJobs is hosted on the Incubator AWS account, which is managed by the DevOps CoP. The application is deployed through Fargate, which itself deploys the CivicTechJob docker image. This repo sends updates to the Incubator through a github action `deploy-stage.yml`.
+CTJ runs as two containers in a shared ECS task on the `incubator-prod` Fargate cluster:
 
-Incubator aws resources are managed using terraform files which are commited to the [Incubator Source](https://github.com/hackforla/incubator/tree/main/terraform/projects/civic-tech-jobs)
+- **Next.js container** — serves the frontend (App Router pages, server components, server actions). Owns the request boundary; the browser only talks to this container.
+- **Django container** — serves the CTJ API (`/api/*`) and the Django admin (`/admin/*`). The Next.js container forwards API and admin traffic to it over the task's internal network.
 
-The resources used by CTJ include the following: 
-- A Database(shared with other projects)
-- DNS Entry
-- ECS Task Definition
-- A Fargate Task
+Both containers share the task's network namespace so the Next.js → Django call hops localhost.
 
+External dependencies referenced at request time:
 
-### Github Action
-Github actions are the mechanism used to convey changes in this CivicTechJobs repo to the AWS deployment. The deploy-stage action is set to run on any updates to the main branch. On run the action will assume an AWS credential, push the newest docker image to Amazon's Elastic Container Registry(ECR), then force a ECS-Fargate redeployment. This process will depend on OIDC to grant AWS permissions for its execution 
+- **AWS Cognito** — JWT-based auth (the same user pool that backs PeopleDepot).
+- **PeopleDepot API** — reference data (user identity, practice areas, roles, project metadata). See [backend.md](backend.md) for the integration shape.
 
-### Regarding Environment Variables
-The combination of Fargate(a managed service from AWS) and terraform means that environment variables are passed into the application differently than when the application is run locally. The environment variables are set in terraform at the following [location](https://github.com/hackforla/incubator/blob/main/terraform/projects/civic-tech-jobs/environment-stage.tf).
-Note that these variables are the same as those found in this repo's [env.example](https://github.com/hackforla/CivicTechJobs/blob/develop/dev/dev.env.example)
+## AWS resources
 
-Some values will come from the terraform modules, but in essense if you must add or edit environment variables for the application in deployment, you will need to change them in Incubator.
+| Resource | Where |
+|----------|-------|
+| ECS Fargate cluster | `incubator-prod` (shared with other Incubator projects) |
+| ECS service + task definition | CTJ-owned, defined in Incubator Terraform |
+| ECR repositories | One image per container (`civic-tech-jobs-frontend`, `civic-tech-jobs-backend`) |
+| RDS PostgreSQL 16 | `incubator-prod-database` (shared instance, CTJ-owned database) |
+| Route53 zone | `civictechjobs.org` |
+| IAM role | `incubator-cicd-civic-tech-jobs` (assumed via OIDC by the deploy workflow) |
 
-### DNS
-The staging environment is current set to run at: https://stage.civictechjobs.org/
+## Deployment workflow
 
-Domain management is done in AWS Route53, through terraform files found in Incubator
+The deploy workflow at [.github/workflows/deploy-stage.yml](.github/workflows/deploy-stage.yml) runs on every push to `main` (excluding `mkdocs/**` and `dev/**` paths):
 
-### Fargate
-AWS Fargate is a managed service which allows CTJ to easily deploy it's containerized application. This is done by updating a AWS task definition and then restarting the associated Fargate service. 
+1. Assumes the `incubator-cicd-civic-tech-jobs` IAM role via GitHub OIDC — no static AWS credentials live in this repo.
+2. Logs into Amazon ECR.
+3. Builds both container images (frontend and backend) and pushes them to their respective ECR repositories with the `stage` tag.
+4. Forces a redeployment of the ECS service so the new task spec pulls both fresh images.
 
-Both of these steps are preformed automatically by the github action in `deploy-stage.yml` when new commits are merged into the `main` branch
+There is no separate production workflow yet — `stage` is the only deployed environment.
 
+## Environment variables
+
+Stage environment variables live in Terraform alongside the rest of the Incubator-managed configuration: see `environment-stage.tf` in [hackforla/incubator/terraform/projects/civic-tech-jobs](https://github.com/hackforla/incubator/tree/main/terraform/projects/civic-tech-jobs).
+
+Adding or editing an environment variable for the deployed app means changing the Terraform module — not editing anything in this repo. The local-dev equivalents in [dev/dev.env.example](dev/dev.env.example) are kept loosely in sync but are not the source of truth for stage.
+
+Variables of note for the Next.js + Django split:
+
+- **Cognito** — pool ID, region, public-key URL (consumed by both containers).
+- **PeopleDepot API** — base URL, auth credentials (consumed by both containers).
+- **Postgres** — `SQL_HOST`, `SQL_DATABASE`, `SQL_USER`, `SQL_PASSWORD`, `SQL_PORT` (Django container only).
+- **Next.js runtime** — `NEXT_PUBLIC_*` for browser-exposed values (e.g., Cognito client ID), private values for server actions.
+
+## DNS
+
+The stage environment is reachable at https://stage.civictechjobs.org/. The zone (`civictechjobs.org`) and records are managed in Route53 via Terraform in the Incubator repository.
+
+## Local equivalents
+
+The local stage approximation lives in [docker-compose.stage.yml](docker-compose.stage.yml) and [stage/Dockerfile](stage/Dockerfile). See the [DevOps Architecture](devops.md) doc for the local stage build process.
 
 ## Additional Resources
 
-[Incubator Repo](https://github.com/hackforla/incubator/tree/main/terraform/projects/civic-tech-jobs)
+- [Incubator Terraform module for CTJ](https://github.com/hackforla/incubator/tree/main/terraform/projects/civic-tech-jobs)
+- [AWS ECS Fargate documentation](https://docs.aws.amazon.com/AmazonECS/latest/userguide/what-is-fargate.html)
