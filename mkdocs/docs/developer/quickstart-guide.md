@@ -1,120 +1,91 @@
 # Quickstart Guide
 
-This is a quickstart guide with instructions for how to get the various environments of the application up and running on your machine.
+Quick reference for running the various local environments. For the first-time setup, see [installation.md](installation.md).
 
-Before doing any of these, make sure to first follow the [Installation Instructions](developer/installation/).
+## Development mode (Docker)
 
-## How to run the app in development mode
+Make sure `dev/dev.env` exists with the right values (copy from `dev/dev.env.example` and fill in placeholders).
 
-First, make sure that `dev.env` is in the `dev` folder with the correct variables.
-
-Start the application in development mode:
 ```sh
 docker compose up --watch
 ```
 
-Test client with this URL:
-```
-http://localhost:5175
-```
+Endpoints:
 
-Test server with these URLs:
-```
-http://localhost:8000/api/opportunities/
+- **Frontend** — http://localhost:3000 (Next.js dev server)
+- **Backend API** — http://localhost:8000/api/
+- **Django admin** — http://localhost:8000/admin/
+- **Healthcheck** — http://localhost:8000/api/healthcheck
 
-http://localhost:8000/api/healthcheck
-```
-- If you request a non-existent api endpoint, eg. `localhost:8000/api/asdf`, it should return an API error response JSON:
-	- `{"error": "API endpoint not found", "status_code": 404, "message": "The requested API endpoint does not exist"}`
+Test that the backend is wired up:
 
-## Run the app in dev mode without Docker
-
-Make sure you have python, poetry, node.js, and npm installed on your machine.
-
-Steps to run the **backend** without docker:
-
-1. In a terminal, navigate to the backend folder with `cd backend`.
-2. Inside this folder, run the backend dev server start command below.
-3. The server should be running on `localhost:8000` now.
-
-Backend dev server start command:
 ```sh
+curl http://localhost:8000/api/healthcheck
+```
+
+A non-existent API endpoint returns a structured 404:
+
+```json
+{"error": "API endpoint not found", "status_code": 404, "message": "The requested API endpoint does not exist"}
+```
+
+## Development mode (without Docker)
+
+Useful for debugging stack-specific issues. Requires Node.js 22 LTS, Python 3.12, and Poetry installed locally.
+
+Run **backend** in one terminal:
+
+```sh
+cd backend
+poetry install
+poetry run python manage.py migrate
 poetry run python manage.py runserver localhost:8000
 ```
 
-<br>
+Run **frontend** in another terminal:
 
-Steps to run the **frontend** without docker:
-
-1. In a separate terminal, navigate to the frontend folder with `cd frontend`.
-2. Inside this folder, run the frontend dev server start command below.
-3. The client dev server should be running on `localhost:5175` now.
-
-Frontend dev server start command:
 ```sh
+cd frontend
+npm install
 npm run dev
 ```
 
-## Local Django ADMIN url and credentials 
+Frontend on http://localhost:3000, backend on http://localhost:8000.
 
-Use the below to log in to your local django server admin portal:
+## Local stage environment
 
-```
-http://localhost:8000/admin/
-```
-- This should work with and without docker
-
-Create an admin user with: 
-```
-python manage.py createsuperuser
-```
-- It will prompt you to enter a username, email, and password to create an admin user. Make sure to write these down
-- You can now use these credentials to log into your local server's admin portal.
-- These credentials are saved into your local postgres instance database, so if this data ever gets deleted or reset, you will have to create an admin user again.
-- Reference: [Writing your first Django app, part 2 | Django documentation | Django](https://docs.djangoproject.com/en/5.1/intro/tutorial02/#introducing-the-django-admin)
-
-
-## Mkdocs
-
-Start mkdocs development server:
+Mirrors the deployed stage shape (production builds, two containers). Used to verify production behavior before pushing.
 
 ```sh
-docker compose -f docker-compose.docs.yml up --watch
+docker compose -f docker-compose.stage.yml up
 ```
 
-- Test with: `http://localhost:8005/CivicTechJobs/`
+Requires `stage/stage.env` (copy from `stage/stage.env.example`). Stage and dev env files are *not* interchangeable — see [devops.md](devops.md).
 
+## Backend linting
 
-## Backend - Linting script
+Run from `backend/`, in this order:
 
-Run these commands inside the `/backend` folder, in the following order:
-
-```
+```sh
 poetry install
 poetry run isort .
 poetry run black .
 poetry run flake8
 ```
 
-- These should ideally be run before making a PR
-- `isort`: sorts the import statements
-- `black`: automatically formats python code
-- `flake8`: lints python code
+Run before opening a backend PR. See [backend.md](backend.md) for what each tool does.
 
+## Frontend linting
 
-## Staging environment
+Run from `frontend/`:
 
-You can view the staging deployment with the following URL: [https://stage.civictechjobs.org/](https://stage.civictechjobs.org/)
-
-How to run the stage environment locally:
-
-1. Make sure you have a `stage.env` file inside the `/stage` folder of your local repository. It should be configured with the correct variables.
-2. Run the staging environment in your local machine:
-
-```
-docker compose -f docker-compose.stage.yml up
+```sh
+npm run lint     # ESLint, auto-fixes what it can
+npm run format   # Prettier, formats JS/TS/JSON
 ```
 
-Notes:
-- [Feature: Set up stage environment in docker by LoTerence · Pull Request #613 · hackforla/CivicTechJobs · GitHub](https://github.com/hackforla/CivicTechJobs/pull/613)
+See [eslint-guide.md](eslint-guide.md) for rule details.
 
+## Deployed stage
+
+Reachable at https://stage.civictechjobs.org/. Built and deployed automatically on push to `main`. See [deployment-infra.md](deployment-infra.md) for the deployment shape.
