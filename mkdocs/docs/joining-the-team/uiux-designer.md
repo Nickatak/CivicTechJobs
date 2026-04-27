@@ -1,13 +1,16 @@
 # UI/UX Designer
 
-## Starting Checklist
+## Starting checklist
 
-1. Review the UI/UX issues on the [Project Management Board](https://github.com/hackforla/CivicTechJobs/projects/1?card_filter_query=label%3A%22role%3A+ui%2Fux%22) and identify an actionable backlog item.
+1. Review the UI/UX issues on the [Hack for LA project board](https://github.com/orgs/hackforla/projects/37) (filter by `role: ui/ux`) and pick an actionable backlog item.
+2. Reach out to the UI/UX Design Team Lead in [`#civictechjobs`](https://hackforla.slack.com/archives/C02509WHFQQ) about claiming the task.
 
-1. Communicate with the UI/UX Design Team Lead about your interest in being assigned a task.
+## Tools and references
 
-## Additional Reading
+- **[Figma file](https://www.figma.com/file/G5bOqhud6azbxyR9El9Ygp/Civic-Tech-Jobs)** — the source of truth for design decisions. See the developer-side [Design System](../developer/design-system.md) doc for how Figma decisions translate into code.
+- **[Software Development Lifecycle diagram](https://drive.google.com/file/d/1emxhYv9N6KuCVrG-gnqkqHdGnjhm_Qvb/view?usp=sharing)** — the generic Hack for LA SDLC. CivicTechJobs follows it with some small variations; ask in Slack about specifics.
+- **[WCAG 2.0 accessibility standards](https://medium.com/pulsar/which-accessibility-testing-tool-should-you-use-e5990e6ef0a)** — required reading. Designs should meet Level AA out of the gate.
 
-1. This is a [generic software development lifecycle diagram](https://drive.google.com/file/d/1emxhYv9N6KuCVrG-gnqkqHdGnjhm_Qvb/view?usp=sharing) for Hack for LA. We would like to talk to you about how this project is different.
+## Working with developers
 
-1. Read about [WCAG 2.0 accessibility standards](https://medium.com/pulsar/which-accessibility-testing-tool-should-you-use-e5990e6ef0a).
+Designers and developers iterate together. When you hand off a Figma frame, expect questions about responsive behavior, edge cases, and dynamic content. The [Design System doc](../developer/design-system.md) explains the design tokens (colors, typography, spacing) developers consume from Figma — keep new designs aligned with those tokens whenever possible.

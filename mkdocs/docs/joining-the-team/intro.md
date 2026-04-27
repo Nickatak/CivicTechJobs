@@ -1,26 +1,24 @@
-Welcome to the Civic Tech Jobs team! This guide will help you get up to speed with everything you need to know to get started as a project team member.
+# Joining the Team
 
-### Let's go!
+Welcome to CivicTechJobs. This guide gets you oriented as a new team member.
 
-1. Before proceeding, please confirm that you have reviewed and completed the steps outlined in Hack for LA’s [Guide for New Volunteers](https://www.hackforla.org/getting-started)
-2. Read [Introduction to the Project](https://hackforla.github.io/CivicTechJobs/) if you haven't already read it.
-3. Check the [Community of Practice -> Open Roles](https://github.com/orgs/hackforla/projects/67/views/8) for current open roles in the Civic Tech Jobs project. Please follow the steps outlined in the respective open role issue. 
-4. Attend our monthly all team meeting on the third Tuesday at 5pm PST. You can find the link pinned in our [Civic Tech Jobs slack channel](https://hackforla.slack.com/archives/C02509WHFQQ).
+## Onboarding steps
 
----
+1. Confirm you've completed Hack for LA's [Guide for New Volunteers](https://www.hackforla.org/getting-started).
+2. Read the [project README](https://github.com/hackforla/CivicTechJobs/blob/main/README.md) and the [project introduction page](../index.md).
+3. Check the [Hack for LA project board](https://github.com/orgs/hackforla/projects/37) for current open roles and active issues.
+4. Attend the monthly all-team meeting (third Tuesday at 5 PM PT). The link is pinned in the [`#civictechjobs` Slack channel](https://hackforla.slack.com/archives/C02509WHFQQ).
 
-### Who are you?
+## Role-specific guides
 
-Click the link that applies to you to find a sequence of immediate action steps:
+Pick the page that matches your role:
 
-[UI/UX Designer](UI-UX-Designer)
+- [UI/UX Designer](uiux-designer.md)
+- [UI/UX Researcher](uiux-researcher.md)
+- Web Developer — see [CONTRIBUTING.md](https://github.com/hackforla/CivicTechJobs/blob/main/CONTRIBUTING.md) for the developer onboarding flow.
 
-[UI/UX Researcher](UI-UX-Researcher)
+If your role isn't listed (e.g., Product Manager, content writer), reach out in `#civictechjobs` and a maintainer will point you at the right starting place.
 
----
+## Accessibility expectations
 
-### Accessibility standards
-
-Title III of the Americans with Disabilities Act (ADA) requires that all sites be accessible to people with disabilities. The World Wide Web (W3C) Consortium's Web Content Accessibility Guidelines (WCAG) 2.0 Level AA function as the current legal standard for site accessibility.
-
-Get acquainted with accessibility: https://www.ada.gov/pcatoolkit/chap5toolkit.htm
+CivicTechJobs targets WCAG 2.0 Level AA compliance, in line with [Title III of the ADA](https://www.ada.gov/pcatoolkit/chap5toolkit.htm). All contributors should be familiar with the basics — see the [accessibility introduction from the Department of Justice](https://www.ada.gov/pcatoolkit/chap5toolkit.htm) and the developer-specific guidance in [design-system.md](../developer/design-system.md).

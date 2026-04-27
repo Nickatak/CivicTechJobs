@@ -1,14 +1,22 @@
 # UI/UX Researcher
 
-## Getting Started
+## Starting checklist
 
-1. Review the UI/UX issues on the [Project Management Board](https://github.com/orgs/hackforla/projects/37/views/5) and identify an actionable backlog item.
+1. Review the UI/UX research issues on the [Hack for LA project board](https://github.com/orgs/hackforla/projects/37/views/5) and pick an actionable backlog item.
+2. Reach out to the UI/UX Research Team Lead in [`#civictechjobs`](https://hackforla.slack.com/archives/C02509WHFQQ) about claiming the task.
 
-2. Communicate with the UI/UX Research Team Lead about your interest in being assigned a task.
+## Research workflow
 
-## Research Documents
+UX research findings are tracked in the project's [Google Drive folder](https://drive.google.com/drive/folders/1hXxvpC8W5Uuzjqo4CxnjDpAMI7sbVnq8?usp=sharing). When starting a new research project, use the [research wiki template](../misc/research-wiki-template.md) to structure your write-up.
 
-- [Completed Research](research-completed)
-- [In Progress Research](research-inprogress)
-- [Researching being audited](research-audits)
-- [WIKI Template for Research](https://hackforla.github.io/CivicTechJobs/misc/research-wiki-template/)
+Key questions to answer up front:
+
+- Who's the audience for this research?
+- What questions does the project need answered?
+- What's the format of the deliverable (interview transcripts, synthesis Miro/Figjam, slide deck)?
+
+## Tools and references
+
+- **[Figma file](https://www.figma.com/file/G5bOqhud6azbxyR9El9Ygp/Civic-Tech-Jobs)** — current designs, useful when planning research scenarios.
+- **[Whimsical task and user-flow diagrams](https://whimsical.com/ctj-task-and-user-flow-8GgB5Moy14fnQDv24o1fGC)** — current user flows, useful as reference for research planning.
+- **[Research wiki template](../misc/research-wiki-template.md)** — start here for new research write-ups.
