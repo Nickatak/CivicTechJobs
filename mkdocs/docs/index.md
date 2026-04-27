@@ -33,4 +33,6 @@ For the project's evolution to date, see [misc/history.md](misc/history.md).
 - [Project board](https://github.com/orgs/hackforla/projects/37)
 - [Slack: `#civictechjobs`](https://hackforla.slack.com/archives/C02509WHFQQ) and `#civictechjobs-dev`
 
+**[Q30]** A "Project One Sheet" reference was dropped from this list (the original linked to a non-durable GitHub user-attachment URL). If the canonical URL is documented elsewhere, link it here.
+
 For full developer onboarding, see [joining-the-team/intro.md](joining-the-team/intro.md). For the broader resource list, see [resources.md](resources.md).

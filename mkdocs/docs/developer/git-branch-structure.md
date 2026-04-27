@@ -35,7 +35,7 @@ Archive of the project's first iteration, before the backend was rewritten in 20
 
 ## Naming conventions
 
-Feature branches use a short prefix to indicate the type of change:
+Feature branches use a short prefix to indicate the type of change: **[Q22]**
 
 - `feature/<description>` — new functionality
 - `fix/<description>` — bug fix

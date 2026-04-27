@@ -3,7 +3,7 @@
 ## Starting checklist
 
 1. Review the UI/UX issues on the [Hack for LA project board](https://github.com/orgs/hackforla/projects/37) (filter by `role: ui/ux`) and pick an actionable backlog item.
-2. Reach out to the UI/UX Design Team Lead in [`#civictechjobs`](https://hackforla.slack.com/archives/C02509WHFQQ) about claiming the task.
+2. Reach out to the UI/UX Design Team Lead in [`#civictechjobs`](https://hackforla.slack.com/archives/C02509WHFQQ) about claiming the task. **[Q26]**
 
 ## Tools and references
 

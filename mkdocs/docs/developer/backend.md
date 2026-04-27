@@ -78,7 +78,7 @@ Flow:
 1. User signs into Cognito via the Next.js frontend.
 2. Next.js receives a JWT and validates it in middleware.
 3. For protected mutations, Next.js server actions forward the validated JWT to this API in the `Authorization: Bearer <token>` header.
-4. A custom DRF authentication backend in [backend/ctj_api/auth.py](https://github.com/hackforla/CivicTechJobs/blob/main/backend/ctj_api/auth.py) verifies the token signature against Cognito's public keys and extracts the `sub` claim — the canonical user identifier shared between CTJ and PeopleDepot.
+4. A custom DRF authentication backend in [backend/ctj_api/auth.py](https://github.com/hackforla/CivicTechJobs/blob/main/backend/ctj_api/auth.py) verifies the token signature against Cognito's public keys and extracts the `sub` claim — the canonical user identifier shared between CTJ and PeopleDepot. **[Q2]**
 
 ## Permissions
 
@@ -89,7 +89,7 @@ Custom DRF permission classes in [backend/ctj_api/permissions.py](https://github
 
 Skill taxonomy mutation is gated by Django admin's built-in staff permission, not a separate DRF class — the API only exposes `GET /api/skills/`.
 
-PM status comes from the `is_project_manager` flag on the local `UserProfile` (renamed from `isProjectManager` to match Python conventions). It is set by an existing admin through Django admin.
+PM status comes from the `is_project_manager` flag on the local `UserProfile` (renamed from `isProjectManager` to match Python conventions). It is set by an existing admin through Django admin. **[Q4]**
 
 ## Django admin as CMS
 
@@ -113,11 +113,11 @@ Server components and server actions in Next.js aggregate both sources in a sing
 
 The qualifier flow exemplifies the split: the user's CoP selection draws from PeopleDepot's practice-areas endpoint, the skills they rate come from CTJ's `/api/skills/` endpoint, and the resulting SkillMatrix is saved to the user's CTJ `UserProfile`.
 
-There is no `frontend_dist/` build copy; the Next.js container is deployed alongside Django, both behind a shared ingress.
+There is no `frontend_dist/` build copy. The Next.js container is deployed alongside Django in the same ECS task; see [deployment-infra.md](deployment-infra.md) for the deployment topology. **[Q7]**
 
 ## PeopleDepot integration
 
-CTJ depends on PeopleDepot for reference data outside its skill-matching domain:
+CTJ depends on PeopleDepot for reference data outside its skill-matching domain: **[Q3]**
 
 - **User identity** — Cognito subjects map 1:1 to PeopleDepot user records (name, email, basic profile).
 - **Practice areas (Communities of Practice)** — taxonomy and descriptions.

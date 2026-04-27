@@ -60,3 +60,5 @@
 ## Tools
 
 - [GoFullPage — full-page screenshot Chrome extension](https://chromewebstore.google.com/detail/gofullpage-full-page-scre/fdpohaocaechififmbbbbbknoalclacl)
+
+**[Q29, Q31]** The previous version of this page linked to (a) the project's GitHub Wiki and a wiki-based "Core Team" page and (b) a separate `CivicTechJobs-Documentation` repository / `hackforla.github.io/CivicTechJobs-Documentation` site under "Historical Docs." Both were dropped in this rewrite. If either is still authoritative or worth a historical pointer, restore the link here.

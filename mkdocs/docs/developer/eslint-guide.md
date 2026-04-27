@@ -12,7 +12,7 @@ The frontend is linted with ESLint 9 (flat config) and formatted with Prettier. 
 | TypeScript rules | `typescript-eslint` |
 | React Hooks rules | `eslint-plugin-react-hooks` |
 | Accessibility rules | `eslint-plugin-jsx-a11y` |
-| Tailwind rules | `eslint-plugin-tailwindcss` (Tailwind 4 compatible) |
+| Tailwind rules | `eslint-plugin-tailwindcss` (Tailwind 4 compatible) **[Q12, Q16]** |
 
 ## Rule highlights
 
@@ -29,7 +29,7 @@ The full rule list is in `eslint.config.mjs`. Notable rules:
 
 - `prettier/prettier` — formatting failures are lint errors. Run `npm run format` to fix.
 
-**React / Hooks**
+**React / Hooks** **[Q18]**
 
 - `react/no-unescaped-entities` — disabled (too noisy for civic-content text)
 - `react-hooks/rules-of-hooks` — error (hooks must run in the right context)
@@ -58,7 +58,7 @@ npm run lint     # Lint all .js/.jsx/.ts/.tsx files; auto-fixes what it can
 npm run format   # Format all JS/TS/JSON files via Prettier
 ```
 
-CI runs `npm run lint` and fails the build on lint errors.
+CI runs `npm run lint` and fails the build on lint errors. **[Q17]**
 
 ## Disabling rules
 

@@ -6,7 +6,7 @@ The CivicTechJobs developer workflow has three core activities:
 - Resolve issues
 - Review code
 
-This guide covers expectations and conventions for each. For mechanics (forking, branching, opening PRs), see [CONTRIBUTING.md](https://github.com/hackforla/CivicTechJobs/blob/main/CONTRIBUTING.md).
+This guide covers expectations and conventions for each. For mechanics (forking, branching, opening PRs), see [CONTRIBUTING.md](https://github.com/hackforla/CivicTechJobs/blob/main/CONTRIBUTING.md). **[Q21]**
 
 ## Make issues
 
@@ -36,7 +36,7 @@ Mechanics:
 
 If an issue is taking significantly longer than its size suggests, post an update on the issue with an ETA and an honest read on whether you can finish. It's better to release an issue back to the backlog than to block on a stalled task.
 
-**Don't ping for review until 72 hours after opening a PR.** The team sweeps PRs on its own cadence; pinging earlier creates noise. If you're done with one task and waiting for review, pick up another issue or review someone else's PR.
+**Don't ping for review until 72 hours after opening a PR.** The team sweeps PRs on its own cadence; pinging earlier creates noise. If you're done with one task and waiting for review, pick up another issue or review someone else's PR. **[Q20]**
 
 ### Frontend vs backend issues
 
@@ -54,6 +54,6 @@ PRs are reviewed against three criteria:
 - **Soundness.** Does it break existing functionality? Are responsive / accessibility behaviors preserved?
 - **Maintainability.** Is the code reasonable to read and extend? Are abstractions appropriate?
 
-A PR can merge with one approving review. For larger or higher-risk changes, request additional reviewers or raise the PR in a developer meeting. **Avoid merging without review** — even small fixes benefit from a second pair of eyes, and accidental direct merges to `develop` or `main` are painful to undo.
+A PR can merge with one approving review. For larger or higher-risk changes, request additional reviewers or raise the PR in a developer meeting. **Avoid merging without review** — even small fixes benefit from a second pair of eyes, and accidental direct merges to `develop` or `main` are painful to undo. **[Q19]**
 
 See the [GitHub documentation on reviewing pull requests](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/about-pull-request-reviews) for mechanics.

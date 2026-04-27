@@ -51,7 +51,7 @@ Three services:
 
 - **`pgdb`** — Postgres 16 with stage env vars.
 - **`django`** — Django stage container, built from `stage/django.dockerfile` (Poetry install, `collectstatic`, Daphne on port 8000).
-- **`next`** — Next.js stage container, built from `stage/next.dockerfile` (`npm run build`, Next.js production server on port 3000). Proxies `/api/*` and `/admin/*` to the `django` service.
+- **`next`** — Next.js stage container, built from `stage/next.dockerfile` (`npm run build`, Next.js production server on port 3000). Proxies `/api/*` and `/admin/*` to the `django` service. **[Q7, Q11]**
 
 ```sh
 docker compose -f docker-compose.stage.yml up
@@ -71,7 +71,7 @@ Run the pre-commit linters via the linter container:
 docker compose run linter
 ```
 
-Configuration is in `.pre-commit-config.yaml`. Frontend ESLint / Prettier (`npm run lint` / `npm run format`) and backend Python lint (`isort`/`black`/`flake8`) are invoked as part of pre-commit hooks; see [eslint-guide.md](eslint-guide.md) and [backend.md](backend.md) for stack-specific lint commands.
+Configuration is in `.pre-commit-config.yaml`. Frontend ESLint / Prettier (`npm run lint` / `npm run format`) and backend Python lint (`isort`/`black`/`flake8`) are invoked as part of pre-commit hooks; see [eslint-guide.md](eslint-guide.md) and [backend.md](backend.md) for stack-specific lint commands. **[Q9, Q10]**
 
 ## Useful Docker commands
 

@@ -12,6 +12,8 @@ The CivicTechJobs Design System (CTJ-DS) is the shared visual + interaction lang
 | Styling | Tailwind CSS 4 |
 | Theme | CSS-first config via Tailwind 4's `@theme` directive |
 
+**[Q12]** Tailwind 4 is the assumed target. The current frontend is on Tailwind 3.4.17; the migration plan (clean rewrite vs. step-by-step) is unresolved.
+
 The component system is **utility-first Tailwind + TypeScript-typed React components**. There is no SCSS, no CSS-modules, no separate component-library tool — Tailwind classes are the styling layer.
 
 ## Source of truth
@@ -58,6 +60,8 @@ frontend/
 │   └── index.ts               # Barrel export
 └── lib/                       # Utility functions
 ```
+
+**[Q14]** `AccordionFaq` (most recently-added component, PR #707) doesn't fit cleanly into the four groups above. Placement TBD — possible new `content/` group, fold into `ui/`, or treat as a one-off.
 
 Each component is a single `.tsx` file with a typed prop interface. No PropTypes (TypeScript types replace them).
 
@@ -118,3 +122,5 @@ Pick based on whether the SVG needs to react to props.
 - [Next.js App Router](https://nextjs.org/docs/app)
 - [React 19](https://react.dev/)
 - [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
+
+**[Q13]** Component documentation tool (Storybook, MDX, or stay with the existing `/demo` route under Next.js) is not specified. **[Q15]** The original design-system doc had multiple `<iframe>` CodeSandbox embeds for layout / spacing / responsive examples; the rewrite drops them. Worth deciding whether any are worth migrating.

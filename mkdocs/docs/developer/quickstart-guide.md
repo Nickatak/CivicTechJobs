@@ -14,7 +14,7 @@ Endpoints:
 
 - **Frontend** — http://localhost:3000 (Next.js dev server)
 - **Backend API** — http://localhost:8000/api/
-- **Django admin** — http://localhost:8000/admin/
+- **Django admin** — http://localhost:8000/admin/ **[Q25]**
 - **Healthcheck** — http://localhost:8000/api/healthcheck
 
 Test that the backend is wired up:
