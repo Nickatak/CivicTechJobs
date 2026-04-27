@@ -1,5 +1,17 @@
 # Security Updates
 
-This project subscribes to GitHub's automated security alerting service. Occasionally the repository home page may have a yellow banner saying "We have found a potential security vulnerability in one of your dependencies" and a link to view the security alert. If you see this, please check our issues list to see if anyone has added an issue for fixing this. If not, please create an issue for this problem. If you feel up to it, please assign the issue to yourself and try to fix it. As with any issue, once you have fixed it on your fork of the repository, push the fixes to your fork and then open a pull request to merge this fix into the main repository.
+CivicTechJobs subscribes to GitHub's automated security alerting (Dependabot). When a vulnerability is detected in a dependency, GitHub surfaces a banner on the repo and Dependabot may automatically open a PR with the suggested update.
 
-**GitHub's "dependabot" may try to generate an automated pull request to fix this issue. Please do not accept this pull request without verifying that it works by applying the update on your local copy of the site.**
+## Process
+
+1. **Triage.** When you see a security alert, check the [issues list](https://github.com/hackforla/CivicTechJobs/issues?q=is%3Aissue+label%3Asecurity) and Dependabot's PRs to see if it's already being handled. If not, file an issue describing the vulnerability and link the GitHub alert.
+
+2. **Verify before merging.** Dependabot's auto-PRs **should not be merged blind**. Pull the branch locally, run the test suite, and exercise the relevant code path to confirm the update doesn't break anything. Many vulnerability alerts are in transitive deps with no actual exploit path in our usage.
+
+3. **Document.** When merging a security update, note in the PR description what was vulnerable, what was updated, and how you verified. This makes future audits easier and gives reviewers context.
+
+## Coordinating with the maintainers
+
+If a vulnerability is high-severity (CVSS 9+) or actively being exploited, ping in [`#civictechjobs-dev`](https://hackforla.slack.com/archives/C02509WHFQQ) before opening the PR so a maintainer can prioritize review.
+
+For lower-severity issues, the standard PR review flow applies.

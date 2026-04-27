@@ -1,20 +1,25 @@
 # History
 
-How Hack for LA evolved from in person onboarding to remote, and the iterative approach that we have taken to arrive at the need for a dedicated interface to list volunteer opportunities.
+## How HfLA volunteer onboarding evolved
 
-## Pre-Covid times
+In the pre-COVID era, Hack for LA practiced in-person onboarding nights. Each volunteer felt valued and had agency in finding the right team, but the process didn't scale.
 
-Hack for LA practiced in person recruiting on onboarding nights. It had its own benefits, like each volunteer felt valued and had agency
+From 2020 to mid-2021, HfLA shifted to listing open roles on its main site. Volunteers either contacted teams directly (which dumped onboarding work onto each project lead, leading to inconsistent processes and burnout) or attended a weekly Zoom onboarding (where domain experts often weren't present to claim new volunteers in real time).
 
-## 2020-mid 2021
+From mid-2021 onward, HfLA moved to a Communities of Practice (CoP) model: new volunteers attend onboarding, then join a CoP, and projects post opportunities to the CoP boards. This puts qualified candidates in front of project leads, lets CoP leads coach unsure candidates, and surfaces signals about whether projects are ready to take on volunteers.
 
-The team later moved on to a new process where the open roles on each team were posted on the Hack For LA site. This led to:
+CivicTechJobs was greenlit as a project to give that opportunity-matching its own dedicated interface — a job-board page where volunteers can find positions matching their skills and interests, while still flowing through CoP review.
 
-- Some volunteers contacted teams directly and the teams became responsible for all onboarding, which was inefficient use of time, leading to poor cohesiveness of our org (onboarding conducted differently by various people and projects). And some projects got too many volunteers but not the right skill level. Ultimately this method led to high turnover of volunteers and product managers getting burnt out.
-- Other volunteers attending a Zoom onboarding session (held weekly). In this process the project leads would show up to recruit at the end, but sometimes there would be no one who could fill the domain specific role. This process was also inefficient.
+## Technical lineage
 
-## mid 2021- current
+CTJ has had three technical leads, each serving roughly 8 months:
 
-Hack for LA moved to a new model where all new volunteer attend onboarding and then join a communities of practice (CoP) and no open roles are posted on the hackforla.org site. These CoPs have volunteer opportunity boards so that when project leads recruit, they can go to a larger group of people who are more likely to be a good fit for the role available. Also CoP leads can help provide coaching if someone is unsure of if they are a good fit. Listings at CoP allow the org to determine if the project is actually ready to receive volunteers.
+- **Ava Li** (Oct 2021 – June 2023, ~20 months) — built the project from scratch: initial React frontend, first Django backend, Docker setup, AWS ECS deployment, GitHub Actions CI/CD, and the original component library. Moved on to a professional role mid-2023.
+- **Jimmy Juarez** (Jan 2024 – Sept 2024, ~8 months) — first senior-level engineer on the project. Decided to scrap and rebuild the original Django backend, producing the current data model (UUID PKs, SkillMatrix concept, permission classes, PeopleDepot integration hooks). The `ava-main-v1` branch preserves the pre-reset code.
+- **Terence Lo** (Aug 2024 – April 2025, ~8 months) — focused on dev environment work (Vite HMR, Docker compose improvements) and PR review. Began the Jest → Vitest migration.
 
-The Hack for LA organization team has now green lighted a project to create a dedicated job board page where volunteers can search and find volunteer opportunities that match their goal and aspirations while still maintaining the involvement of onboarding and CoPs.
+Between leads there have been several-month gaps; the project has been largely inactive since August 2025.
+
+## The rewrite proposal era
+
+In April 2026 a volunteer surfaced an engineering assessment proposing to keep the (well-designed) Django backend, replace the Vite frontend with a Next.js 15 application, and integrate CTJ as a thin client of HfLA's actively-maintained PeopleDepot system for reference data. The current state of the docs (this directory) reflects the proposed shape under that direction.
