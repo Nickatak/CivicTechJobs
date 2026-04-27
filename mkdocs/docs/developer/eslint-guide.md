@@ -1,94 +1,86 @@
-# ESLint Guide - CTJ
+# ESLint Guide
 
-The purpose of this page is to document how our ESLint setup is configured. ESLint is responsible for linting the frontend portion of our application.
+The frontend is linted with ESLint 9 (flat config) and formatted with Prettier. Configuration lives at [frontend/eslint.config.mjs](frontend/eslint.config.mjs).
 
-## ESLint Configuration Documentation for Frontend Developers
+## Stack
 
-Our ESLint configuration is tailored to help us maintain a clean, consistent codebase with special attention to React, TypeScript, Tailwind CSS, and accessibility standards. Below is an overview of the main components and rules in the configuration and how they function.
+| Layer | Tool |
+|-------|------|
+| Linter | ESLint 9 (flat config) |
+| Formatter | Prettier |
+| Next.js rules | `eslint-config-next` (Core Web Vitals preset) |
+| TypeScript rules | `typescript-eslint` |
+| React Hooks rules | `eslint-plugin-react-hooks` |
+| Accessibility rules | `eslint-plugin-jsx-a11y` |
+| Tailwind rules | `eslint-plugin-tailwindcss` (Tailwind 4 compatible) |
 
-### Plugins and Extensions
-This configuration uses several plugins to enhance linting capabilities:
+## Rule highlights
 
-1. **@eslint/js** - Provides basic JavaScript linting rules.
-2. **typescript-eslint** - Adds TypeScript support, integrating rules to enforce TypeScript-specific syntax and best practices.
-3. **eslint-plugin-react** - Adds React-specific linting rules to ensure best practices with JSX.
-4. **eslint-plugin-prettier** - Enforces code formatting consistency, using Prettier's rules.
-5. **eslint-plugin-tailwindcss** - Adds rules specific to Tailwind CSS, helping with class management and preventing misconfigured or conflicting classes.
-6. **eslint-plugin-react-hooks** - Enforces React Hooks rules, including hook dependency checking.
-7. **eslint-plugin-jsx-a11y** - Adds accessibility rules for JSX, ensuring the markup adheres to accessibility standards.
+The full rule list is in `eslint.config.mjs`. Notable rules:
 
-### Key Configuration Options
+**General**
 
-1. **File Matching**  
-   The configuration applies to all JavaScript, JSX, TypeScript, and TSX files in the project, matching the following patterns:
-   - `**/*.js`
-   - `**/*.jsx`
-   - `**/*.ts`
-   - `**/*.tsx`
+- `no-unused-vars` — warn (TypeScript catches the type-level cases as errors)
+- `no-console` — warn (production code shouldn't ship logs)
+- `indent: 2` — enforced
+- `no-irregular-whitespace` — error
 
-2. **Global Environment**  
-   Sets up global variables specific to browser environments to avoid undefined variable errors.
+**Prettier**
 
-3. **React Settings**  
-   Automatically detects the version of React being used, which optimizes the linting experience.
+- `prettier/prettier` — formatting failures are lint errors. Run `npm run format` to fix.
 
-4. **Rules**
+**React / Hooks**
 
-   - **General Rules:**
-     - `no-unused-vars`: Warns about variables defined but not used.
-     - `no-console`: Warns when `console` statements are used in production code.
-     - `indent`: Enforces a 2-space indentation style for code consistency.
-     - `no-irregular-whitespace`: Prevents errors caused by unexpected whitespace.
+- `react/no-unescaped-entities` — disabled (too noisy for civic-content text)
+- `react-hooks/rules-of-hooks` — error (hooks must run in the right context)
+- `react-hooks/exhaustive-deps` — warn (missing dependency arrays)
 
-   - **Prettier Integration**:  
-     - `prettier/prettier`: Enforces Prettier's formatting rules for a consistent code style.
+**TypeScript**
 
-   - **React-Specific Rules:**
-     - `react/no-unescaped-entities`: Disabled globally. To bypass, use `/* eslint-disable react/no-unescaped-entities */` at the top of a file when necessary.
-     - `react-hooks/rules-of-hooks`: Ensures hooks are only used within functional components and custom hooks.
-     - `react-hooks/exhaustive-deps`: Warns about missing dependencies in effect hooks.
+- `@typescript-eslint/no-unused-vars` — error (stricter than the plain JS version)
 
-   - **TypeScript Rules:**
-     - `@typescript-eslint/no-unused-vars`: Flags unused variables in TypeScript code as errors.
+**Tailwind**
 
-   - **Tailwind CSS Rules:**
-     - `tailwindcss/no-contradicting-classname`: Prevents usage of conflicting Tailwind CSS classes.
-     - `tailwindcss/no-unnecessary-arbitrary-value`: Warns about arbitrary values in Tailwind that could be simplified.
-     - `tailwindcss/classnames-order`: Enforces consistent order of Tailwind CSS classes.
+- `tailwindcss/no-contradicting-classname` — error (e.g., `text-left text-right`)
+- `tailwindcss/no-unnecessary-arbitrary-value` — error (use theme tokens instead of `[16px]`)
+- `tailwindcss/classnames-order` — error (consistent class ordering)
 
-   - **Accessibility Rules (JSX A11y)**:
-     - `jsx-a11y/alt-text`: Ensures all `img` elements have an `alt` attribute for accessibility.
+**Accessibility (jsx-a11y)**
 
-5. **Ignored Files and Folders**
-   - Certain files and folders are ignored to avoid unnecessary linting errors, such as `node_modules/`, config files (`*.config.js`), and mock data in `tests/__mocks__`.
+- `jsx-a11y/alt-text` — error (`<img>` and `<Image>` must have alt text)
+- Plus the rest of `eslint-plugin-jsx-a11y`'s recommended set, inherited from `eslint-config-next`.
 
-### Notes on Using ESLint in Development
+## Running
 
-- **Disabling Rules Temporarily**: If you encounter specific rule warnings or errors that are intentional or irrelevant to your case, you can disable rules at the file or line level using `// eslint-disable` comments.
-- **Testing New Plugins or Rules**: When new plugins or rules are added, test them in a few sample files to ensure compatibility and expected behavior.
+```sh
+cd frontend
+npm run lint     # Lint all .js/.jsx/.ts/.tsx files; auto-fixes what it can
+npm run format   # Format all JS/TS/JSON files via Prettier
+```
 
-### Running Linter and Formatter
-To help maintain consistent code quality and style across the project, we’ve set up commands for both linting and formatting. Here’s how to use them:
+CI runs `npm run lint` and fails the build on lint errors.
 
-### Linting:
+## Disabling rules
 
-Run the linter using `npm run lint`. This command will analyze all files in the project for potential linting issues. It will attempt to auto-fix any issues it can and will display whether the code passed or failed the check.
-If there are any issues that cannot be auto-fixed, the output will provide details so they can be manually reviewed and addressed.
+Don't disable rules wholesale in the config — disable at the file or line level when you have a real reason:
 
-### Formatting:
+```ts
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _intentionallyUnused = setup();
+```
 
-Run the formatter using `npm run format`. This command will format all JavaScript, TypeScript, and JSON files in the project, skipping any files specified in .gitignore.
-These steps help ensure a consistent coding style across the project, minimizing style-related issues and making code easier to read and maintain.
-  
-This ESLint setup ensures our codebase is both clean and accessible, while supporting best practices in React, TypeScript, and Tailwind CSS usage. For any adjustments to the rules or extensions, reach out to the team for further guidance.
+If you find yourself disabling the same rule across many files, that's a signal to revisit the rule itself or the code pattern, not to keep papering over it.
 
-### Recommended Extensions for VS Code
-To ensure consistent code quality and style across the team, please install the following extensions in Visual Studio Code:
+## Recommended VS Code extensions
 
-- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) — surfaces lint errors inline as you type.
+- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) — format-on-save support.
 
-## Additional Resources
+Both should pick up the project config automatically when the editor is opened at the repo root.
 
-[Documentation - ESLint - Pluggable JavaScript Linter](https://eslint.org/docs/latest/)
-[What is Prettier? · Prettier](https://prettier.io/docs/)
+## Resources
+
+- [ESLint](https://eslint.org/docs/latest/)
+- [Prettier](https://prettier.io/docs/)
+- [eslint-config-next](https://nextjs.org/docs/app/api-reference/config/eslint)
+- [typescript-eslint](https://typescript-eslint.io/)
