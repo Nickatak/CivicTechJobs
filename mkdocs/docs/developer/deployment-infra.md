@@ -31,7 +31,7 @@ External dependencies referenced at request time:
 
 ## Deployment workflow
 
-The deploy workflow at [.github/workflows/deploy-stage.yml](.github/workflows/deploy-stage.yml) runs on every push to `main` (excluding `mkdocs/**` and `dev/**` paths):
+The deploy workflow at [.github/workflows/deploy-stage.yml](https://github.com/hackforla/CivicTechJobs/blob/main/.github/workflows/deploy-stage.yml) runs on every push to `main` (excluding `mkdocs/**` and `dev/**` paths):
 
 1. Assumes the `incubator-cicd-civic-tech-jobs` IAM role via GitHub OIDC — no static AWS credentials live in this repo.
 2. Logs into Amazon ECR.
@@ -44,7 +44,7 @@ There is no separate production workflow yet — `stage` is the only deployed en
 
 Stage environment variables live in Terraform alongside the rest of the Incubator-managed configuration: see `environment-stage.tf` in [hackforla/incubator/terraform/projects/civic-tech-jobs](https://github.com/hackforla/incubator/tree/main/terraform/projects/civic-tech-jobs).
 
-Adding or editing an environment variable for the deployed app means changing the Terraform module — not editing anything in this repo. The local-dev equivalents in [dev/dev.env.example](dev/dev.env.example) are kept loosely in sync but are not the source of truth for stage.
+Adding or editing an environment variable for the deployed app means changing the Terraform module — not editing anything in this repo. The local-dev equivalents in [dev/dev.env.example](https://github.com/hackforla/CivicTechJobs/blob/main/dev/dev.env.example) are kept loosely in sync but are not the source of truth for stage.
 
 Variables of note for the Next.js + Django split:
 
@@ -59,7 +59,7 @@ The stage environment is reachable at https://stage.civictechjobs.org/. The zone
 
 ## Local equivalents
 
-The local stage approximation lives in [docker-compose.stage.yml](docker-compose.stage.yml) and [stage/Dockerfile](stage/Dockerfile). See the [DevOps Architecture](devops.md) doc for the local stage build process.
+The local stage approximation lives in [docker-compose.stage.yml](https://github.com/hackforla/CivicTechJobs/blob/main/docker-compose.stage.yml) and the per-container Dockerfiles under `stage/`. See the [DevOps Architecture](devops.md) doc for the local stage build process.
 
 ## Additional Resources
 

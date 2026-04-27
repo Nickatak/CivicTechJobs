@@ -105,7 +105,7 @@ Pick based on whether the SVG needs to react to props.
 
 ## Accessibility
 
-- WCAG 2.0 Level AA is the target compliance level (per [misc/ada-guide.md](../misc/ada-guide.md) — superseded by this guide if conflicts arise).
+- WCAG 2.0 Level AA is the target compliance level.
 - All interactive elements must be keyboard-navigable.
 - All images need `alt` text; decorative SVGs use `aria-hidden="true"`.
 - The `eslint-plugin-jsx-a11y` rules catch most static issues (see [developer/eslint-guide.md](eslint-guide.md)).

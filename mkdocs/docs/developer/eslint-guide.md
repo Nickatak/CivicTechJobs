@@ -1,6 +1,6 @@
 # ESLint Guide
 
-The frontend is linted with ESLint 9 (flat config) and formatted with Prettier. Configuration lives at [frontend/eslint.config.mjs](frontend/eslint.config.mjs).
+The frontend is linted with ESLint 9 (flat config) and formatted with Prettier. Configuration lives at [frontend/eslint.config.mjs](https://github.com/hackforla/CivicTechJobs/blob/main/frontend/eslint.config.mjs).
 
 ## Stack
 

@@ -65,7 +65,7 @@ Endpoints are scoped to CTJ's owned domain. Reference data is consumed directly 
 
 The matching endpoint (ranking opportunities against a user's SkillMatrix or vice versa) is part of the stage-2 backend rewrite — see "What's not built yet."
 
-The OpenAPI spec is at [backend/openapi-schema.yml](backend/openapi-schema.yml) and is regenerated whenever `startServer.sh` runs.
+The OpenAPI spec is at [backend/openapi-schema.yml](https://github.com/hackforla/CivicTechJobs/blob/main/backend/openapi-schema.yml) and is regenerated whenever `startServer.sh` runs.
 
 Non-existent `/api/*` routes return a structured JSON 404.
 
@@ -78,11 +78,11 @@ Flow:
 1. User signs into Cognito via the Next.js frontend.
 2. Next.js receives a JWT and validates it in middleware.
 3. For protected mutations, Next.js server actions forward the validated JWT to this API in the `Authorization: Bearer <token>` header.
-4. A custom DRF authentication backend in [backend/ctj_api/auth.py](backend/ctj_api/auth.py) verifies the token signature against Cognito's public keys and extracts the `sub` claim — the canonical user identifier shared between CTJ and PeopleDepot.
+4. A custom DRF authentication backend in [backend/ctj_api/auth.py](https://github.com/hackforla/CivicTechJobs/blob/main/backend/ctj_api/auth.py) verifies the token signature against Cognito's public keys and extracts the `sub` claim — the canonical user identifier shared between CTJ and PeopleDepot.
 
 ## Permissions
 
-Custom DRF permission classes in [backend/ctj_api/permissions.py](backend/ctj_api/permissions.py):
+Custom DRF permission classes in [backend/ctj_api/permissions.py](https://github.com/hackforla/CivicTechJobs/blob/main/backend/ctj_api/permissions.py):
 
 - **OpportunityPermission** — anyone authenticated can read; only PMs can create; only the creator can update; any PM can delete.
 - **UserProfilePermission** — users can only read or write their own SkillMatrix, CoP selection, and availability. (Renamed from `UserDetailPermission` to match the model rename.)
@@ -124,7 +124,7 @@ CTJ depends on PeopleDepot for reference data outside its skill-matching domain:
 - **Role / job-title taxonomy.**
 - **Project metadata** — project name, meeting times, status, etc.
 
-CTJ stores PeopleDepot UUIDs as references (e.g., `Opportunity.project_id` is a PeopleDepot project UUID, not a Django foreign key). The PeopleDepot client at [backend/ctj_api/clients/peopledepot.py](backend/ctj_api/clients/peopledepot.py) wraps the relevant PeopleDepot endpoints with typed Python interfaces.
+CTJ stores PeopleDepot UUIDs as references (e.g., `Opportunity.project_id` is a PeopleDepot project UUID, not a Django foreign key). The PeopleDepot client at [backend/ctj_api/clients/peopledepot.py](https://github.com/hackforla/CivicTechJobs/blob/main/backend/ctj_api/clients/peopledepot.py) wraps the relevant PeopleDepot endpoints with typed Python interfaces.
 
 ## What's not built yet
 
@@ -152,7 +152,7 @@ poetry run black .
 poetry run flake8
 ```
 
-Configuration is in [backend/pyproject.toml](backend/pyproject.toml) and [backend/.flake8](backend/.flake8).
+Configuration is in [backend/pyproject.toml](https://github.com/hackforla/CivicTechJobs/blob/main/backend/pyproject.toml) and [backend/.flake8](https://github.com/hackforla/CivicTechJobs/blob/main/backend/.flake8).
 
 ## External docs
 

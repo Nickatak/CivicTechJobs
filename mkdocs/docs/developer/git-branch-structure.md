@@ -6,7 +6,7 @@ The CivicTechJobs repo uses a three-branch model: **`main`**, **`develop`**, and
 
 ### `main`
 
-Production code. Pushes to `main` trigger the deployment workflow ([.github/workflows/deploy-stage.yml](.github/workflows/deploy-stage.yml)) which builds the container images and redeploys the stage ECS task. Direct pushes are not allowed; changes land via PR from `develop`.
+Production code. Pushes to `main` trigger the deployment workflow ([.github/workflows/deploy-stage.yml](https://github.com/hackforla/CivicTechJobs/blob/main/.github/workflows/deploy-stage.yml)) which builds the container images and redeploys the stage ECS task. Direct pushes are not allowed; changes land via PR from `develop`.
 
 ### `develop`
 

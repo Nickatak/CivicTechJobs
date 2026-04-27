@@ -61,7 +61,7 @@ docker compose -f docker-compose.stage.yml up
 
 ## Deployed staging
 
-Lives at https://stage.civictechjobs.org/, built and deployed via [.github/workflows/deploy-stage.yml](.github/workflows/deploy-stage.yml) on each push to `main`. Two ECR images, one ECS task, same shape as the local stage but with infrastructure values supplied by the Incubator Terraform module. Full details in [deployment-infra.md](deployment-infra.md).
+Lives at https://stage.civictechjobs.org/, built and deployed via [.github/workflows/deploy-stage.yml](https://github.com/hackforla/CivicTechJobs/blob/main/.github/workflows/deploy-stage.yml) on each push to `main`. Two ECR images, one ECS task, same shape as the local stage but with infrastructure values supplied by the Incubator Terraform module. Full details in [deployment-infra.md](deployment-infra.md).
 
 ## Linting
 
