@@ -1,78 +1,59 @@
 # Development Culture
 
-At CivicTechJobs, the developers of our team have 3 key tasks:
+The CivicTechJobs developer workflow has three core activities:
 
 - Make issues
 - Resolve issues
 - Review code
 
-This guide will discuss how each of these work at CivicTechJobs. If you have any questions be sure to let us know! We strive to create an inclusive space for developers to learn and achieve their goals.
+This guide covers expectations and conventions for each. For mechanics (forking, branching, opening PRs), see [CONTRIBUTING.md](https://github.com/hackforla/CivicTechJobs/blob/main/CONTRIBUTING.md).
 
-## Make Issues
+## Make issues
 
-> To make an issue, follow [this guide](https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-an-issue) from GitHub, or take a look at [this section](https://github.com/hackforla/CivicTechJobs/blob/main/CONTRIBUTING.md#making-issues-1) of the CONTRIBUTING.md.
+Project work starts with an issue. A good issue describes the situation, the desired outcome, and any context another developer would need to pick it up cold.
 
-At CivicTechJobs, updating the project starts with creating an issue outlining the situation and changes needed to resolve the situation. When writing an issue, a good rule of thumb is to write as if another developer would be the one to work on the issue. Therefore, being thorough is better than brief. Some good guidelines to follow:
+When writing an issue:
 
-- Write a brief, two sentence summary for the overview. Be sure to note why these changes is needed.
-- In the overview, use language with little jargon.
-- Action items are usually step by step instructions or a list of requirements.
-- Longer explanations or useful documentation, if needed, are placed in the Instruction/Resources section.
-- Dependencies should 90% of the time be another issue. If this issue does not exist, it should probably be made and referenced as a dependency.
-- Likewise, the dependency should reference the issue it is a dependency for so that there is a trail to release issues with dependencies.
-- Check out examples of developer issues, such as [this](https://github.com/hackforla/CivicTechJobs/issues/61), for how to structure and word issues.
+- Open with a 1–2 sentence overview that includes *why* the change is needed.
+- Use plain language; avoid jargon in the overview.
+- Action items should be concrete — step-by-step instructions or a list of acceptance criteria.
+- Put longer context, references, or design links in an "Instructions / Resources" section below the action items.
+- If the issue depends on another issue, link it explicitly. If the dependency doesn't exist yet, file it.
 
-After writing out the issue, be sure to [add labels](https://docs.github.com/en/issues/using-labels-and-milestones-to-track-work/managing-labels#applying-a-label). At minimum, we need three labels, one each from the "size", "role" and "feature/p-feature" series. In most cases, you should not create your own label. If you are unsure what labels to place, it is okay to leave it be, as another team member will help you when they notice the issue lacks certain labels.
+Once the issue is filed, add labels. At minimum, every issue should have one label each from the **size**, **role**, and **feature / p-feature** series. Don't invent new labels — if existing options don't fit, leave the labeling open and a team member will add what's needed during triage.
 
-Once an issue is created, and placed in the [Project Management](https://github.com/hackforla/CivicTechJobs/projects/1) project board, the developer is mostly done with the issue. If the issue contains a dependency, it will move into the "Ice Box" column via [GitHub automation](https://github.com/hackforla/CivicTechJobs/blob/bafc2fc1706ac49ec9c2c7cb610a29bddc561339/.github/workflows/issue-trigger.yml#L7), or "New Issue Approval", otherwise.
+Issues are tracked on the [Hack for LA project board](https://github.com/orgs/hackforla/projects/37). New issues land in "New Issue Approval" and move through prioritization columns as the team triages them. A maintainer or PM may comment with questions or revisions before approval — read those carefully and update the issue or reply.
 
-On rare occasions, a project manager, or other team members, might ping you with questions on the issue. Perhaps the team member did not understand the jargon, or the instructions were unclear. In that case, read their concerns carefully and either answer with a comment, or edit the original issue. Eventually, the issue will be approved, prioritized, and released into the "Prioritized Backlog" column, where developers can work on it.
+## Resolve issues
 
-## Resolve Issues
+When picking work from the "Prioritized Backlog" column, the **size** and **role** labels are the main signals: size is roughly the time commitment (small ≈ a week, large ≈ two to three weeks), role is which expertise the issue is aimed at. New contributors are encouraged to start with smaller issues to calibrate.
 
-> To resolve an issue, take a look at [this section](https://github.com/hackforla/CivicTechJobs/blob/main/CONTRIBUTING.md#resolving-issues-1) of the CONTRIBUTING.md.
+Mechanics:
 
-When choosing an issue to work on from the "Prioritized Backlog" column, it is good to note the "role" and "size" label. This signals the expertise required and time commitment needed to resolve the issue. As a rule of thumb, a smaller issue should take a week, and a larger issue, two or three weeks. This should give you a good idea on what issues is best for you to take at the moment. If you are completely new, we recommend taking smaller issues to understand your limits before pushing them further. That said, you are free to work on whatever you want.
+1. Comment on the issue to claim it; assign it to yourself.
+2. Branch off `develop` (see [git-branch-structure.md](git-branch-structure.md)).
+3. Open a PR back into `develop` when the work is ready.
 
-On occasion, when an issue is being worked on for an inordinate amount of time, the team might request an update on your progress. When giving your progress, it is courteous to give an ETA on the issue, and evaluate on your ability to resolve the issue in a reasonable timeframe. If an issue is taking far too long, it might be wise to abandon the issue and work on something that might bring more value to you and the team.
+If an issue is taking significantly longer than its size suggests, post an update on the issue with an ETA and an honest read on whether you can finish. It's better to release an issue back to the backlog than to block on a stalled task.
 
-Also, one final note: **Do not contact the team via email or Slack to review your pull request unless it as been 72 hours since it was opened! The team will occasionally comb for pull requests and review them.** If you want to move on to another issue, consider reviewing another developer's pull request (if you are part of the team), contribute to other open source projects, or ask the team for additional tasks.
+**Don't ping for review until 72 hours after opening a PR.** The team sweeps PRs on its own cadence; pinging earlier creates noise. If you're done with one task and waiting for review, pick up another issue or review someone else's PR.
 
-Most issues can be divided into two broad types: frontend issues, and backend issues.
+### Frontend vs backend issues
 
-### Frontend issues
+Most work falls into two broad categories. Under the Next.js + Django stack, the boundary is fuzzier than it used to be (server components and server actions live on the frontend side but talk directly to the database via the API), so the labels are a hint rather than a hard divide.
 
-- Usually involves the appearance of the site
-- Usually easier than backend issues
-- Requires little research
-- Is occasionally an audit
-- May involve documentation
+**Frontend** — work in `frontend/` (Next.js app, components, server actions). Usually paired with a Figma reference. Visual or interaction-heavy.
 
-When working on frontend issues, there will usually be a link to the Figma design. Figma often contains multiple prototypes and future prototypes. When looking for our current design, go to the bottom right corner and look for a pink rectangle. Anything within that represents our most up-to-date design. Use that as a reference for your frontend issues. If the pink rectangle is not there, please request the UI design team to put a pink rectangle on the latest approved design.
+**Backend** — work in `backend/` (Django models, API endpoints, permissions, PeopleDepot integration, matching). Usually involves data flow, schema, or auth concerns and benefits from upfront discussion in the issue.
 
-On rare circumstances, designs can change in the middle of work. This is something that happens as part of development, but will often be telegraphed during meetings. If a design change, you are free to reassess and abandon your current issue, or code pragmatically to ensure your work would not need a massive overhaul.
+## Review code
 
-### Backend issues
+PRs are reviewed against three criteria:
 
-- Usually involves research and discussion
-- Can also pertain to [GitHub Actions](https://docs.github.com/en/actions)
-- Usually takes some time
-- May involve documentation
+- **Correctness.** Does the change resolve the stated issue? Are there extraneous changes?
+- **Soundness.** Does it break existing functionality? Are responsive / accessibility behaviors preserved?
+- **Maintainability.** Is the code reasonable to read and extend? Are abstractions appropriate?
 
-## Review Code
+A PR can merge with one approving review. For larger or higher-risk changes, request additional reviewers or raise the PR in a developer meeting. **Avoid merging without review** — even small fixes benefit from a second pair of eyes, and accidental direct merges to `develop` or `main` are painful to undo.
 
-> To review code, please take a look at this [GitHub documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/about-pull-request-reviews), and this portion of our [CONTRIBUTING.md](https://github.com/hackforla/CivicTechJobs/blob/main/CONTRIBUTING.md#reviewing-code).
-
-Code that should be reviewed is found in the [pull request tab](https://github.com/hackforla/CivicTechJobs/pulls). These are issues that require someone to look over for several criteria:
-
-- Applicability: Were the correct changes made? Where new lines added or removed that are extraneous to the issue?
-- Brokenness: Did the changes break the site? Is the changes responsive to view-port changes?
-- Cleanliness: Is the new code programmatic or messy? Would the code be hard to maintain in the long run?
-
-When code meets all three criteria, it can then be merged and made a part of the site. Otherwise, the review should indicate changes that needs to be made.
-
-As an advanced project, CivicTechJobs have certain expectations for our developers. One of these is that issues of size 1 or 2 is small enough that we "pre-review" them. This means that we are confident that the developer can resolve these issues without review. Therefore, these issues can be merged directly into our codebase upon resolution. That said, it is still fine to request the team to review your code if feedback is desired.
-
-**Important:** Although issues can be pre-reviewed, do not make a habit of merging without making a pull request. There will be times when you performed an accidental merge, which could be a pain to fix on the command-line.
-
-As one final note, code can be merged solely on one approved review but it is fine to request more reviewers or ask for the team to review it during a developer meeting.
+See the [GitHub documentation on reviewing pull requests](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/about-pull-request-reviews) for mechanics.
