@@ -1,38 +1,55 @@
-# GitHub Repo Branch Structure
+# Git Branch Structure
 
-## Summary
+The CivicTechJobs repo uses a three-branch model: **`main`**, **`develop`**, and the archived **`ava-main-v1`**. New work happens on feature branches off `develop`; releases land on `main`. The model follows the [git-flow pattern](https://nvie.com/posts/a-successful-git-branching-model/).
 
-There are three protected branches in our github repo: `main`, `develop`, and `ava-main-v1`.
+## Protected branches
 
-The two core branches we will use to develop with are  `main` and `develop`. We will use a multi-branching model to collaborate effectively. You can read more about it here: [A successful Git branching model » nvie.com](https://nvie.com/posts/a-successful-git-branching-model/).
+### `main`
 
-The branch `ava-main-v1` is archived for historical purposes.
+Production code. Pushes to `main` trigger the deployment workflow ([.github/workflows/deploy-stage.yml](.github/workflows/deploy-stage.yml)) which builds the container images and redeploys the stage ECS task. Direct pushes are not allowed; changes land via PR from `develop`.
 
-## What are the `main` and `develop` branches?
+### `develop`
 
-The `main` branch is the **core branch in which production code resides**. This is the branch that houses the code that will get deployed to the production environment and delivered to real live users. It is extremely important to make sure this branch is 100% functional, tested and bug-free.
+The integration branch. Feature branches PR into `develop`; once merged, the change is part of the next release. New contributor work *always* branches off `develop`, never off `main`.
 
-The `develop` branch is the branch we use to stage new features and changes to the code, before pushing it to production. We use this branch to test new code inside a staging environment before delivering it to production.
+### `ava-main-v1`
 
-Developers should create feature branches off of the `develop` branch, then make a pull request from that new feature branch into the `develop` branch. For example: `feature/mybutton-component` gets branched off `develop`, worked on in a dev's local machine, then pushed up the origin repo, and finally pull requested back into the `develop` branch.
+Archive of the project's first iteration, before the backend was rewritten in 2024. Preserved on the upstream repo for historical reference — useful if you ever need to look at how the original team implemented a feature (e.g., the original super-linter setup). Not intended for new work.
 
-Once all the new code in the `develop` branch passed all checks and tests, it should be merged into the `main` branch. This will finally deliver the new code to end users.
+## Feature branch workflow
 
-If you are still confused, please read the link or watch the youtube video in Additional Resources below for more details. It explains everything much more clearly. Also feel free to ask anyone on the team how it all works.
+1. Branch off `develop`:
+    ```sh
+    git checkout develop
+    git pull
+    git checkout -b feature/<short-description>
+    ```
 
-## What is the Ava-main-V1 branch?
+2. Work, commit, push.
 
-To understand the branch `ava-main-v1`, we need a quick background on the history of the CivicTechJobs project for context.
+3. Open a PR against `develop` from the GitHub UI. See [development-culture.md](development-culture.md) for review expectations.
 
-Ava Li was the first Technical Project Lead of CivicTechJobs. She initiated the project, and she worked with her team to write all the frontend and backend code. Before she left, she migrated the entire project from plain Python to Poetry. This broke a lot of things in the backend.
+4. Once merged, delete the feature branch.
 
-Jimmy Juarez was the next Technical Project Lead. Since the backend was non functional, Jimmy made the decision to reset the entire Django backend and rebuild it from scratch. This split the codebase from "Version 1: pre backend reset", to "Version 2: post backend reset".
+5. Periodically (when `develop` accumulates work that's been verified on stage), open a PR from `develop` into `main` to ship a release.
 
-Ava and her team's pre-backend reset code is preserved in the branch `ava-main-v1`. This way their work is not lost, and if we ever need to implement a feature they already did before, we can always look back and study their code. This is the purpose of `ava-main-v1`.
+## Naming conventions
 
-For example, they had implemented a super linter for Python and Javascript, which does not exist in the current code base. So if we ever want to do that, we can see what they did to deliver it.
+Feature branches use a short prefix to indicate the type of change:
 
-## Additional Resources
+- `feature/<description>` — new functionality
+- `fix/<description>` — bug fix
+- `refactor/<description>` — internal restructuring with no behavior change
+- `docs/<description>` — documentation-only change
+- `chore/<description>` — tooling, dependencies, or other non-feature work
 
-[Getting started with branching workflows, Git Flow and GitHub Flow - YouTube](https://www.youtube.com/watch?v=gW6dFpTMk8s)<br>
-[A successful Git branching model » nvie.com](https://nvie.com/posts/a-successful-git-branching-model/)<br>
+Keep the description concise (3–5 hyphenated words is plenty). Long branch names get truncated in the UI.
+
+## Why the three-branch model
+
+Keeping `develop` as a separate integration branch lets the team batch verified changes for release without blocking ongoing PRs. `main` always reflects what's deployed; `develop` reflects what's being prepared. For a small team this is more ceremony than a single-trunk model would need, but it's the convention HfLA volunteers expect across projects.
+
+## Resources
+
+- [A successful Git branching model](https://nvie.com/posts/a-successful-git-branching-model/) — the original git-flow article
+- [Git documentation: branches](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
