@@ -3,7 +3,7 @@
 ## Starting checklist
 
 1. Review the UI/UX research issues on the [Hack for LA project board](https://github.com/orgs/hackforla/projects/37/views/5) and pick an actionable backlog item.
-2. Reach out to the UI/UX Research Team Lead in [`#civictechjobs`](https://hackforla.slack.com/archives/C02509WHFQQ) about claiming the task. **[Q26]**
+2. Reach out in [`#civictechjobs`](https://hackforla.slack.com/archives/C02509WHFQQ) about claiming the task. The UI/UX Research Team Lead role may be in transition during the project's current quiet period — ask in the channel for current routing.
 
 ## Research workflow
 

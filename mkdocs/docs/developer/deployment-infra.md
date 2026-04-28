@@ -2,10 +2,6 @@
 
 CivicTechJobs is deployed on Hack for LA's Incubator AWS account (035866691871, `us-west-2`), managed by the DevOps Community of Practice. The shared infrastructure (ECS Fargate cluster, RDS, Route53) is provisioned via Terraform in the [hackforla/incubator](https://github.com/hackforla/incubator/tree/main/terraform/projects/civic-tech-jobs) repository.
 
-![CTJ Infrastructure Diagram](../assets/ctj-infra-diagram.png)
-
-**[Q6]** The diagram above was drawn for the prior single-container topology and is stale relative to the two-container shape described below.
-
 ## Topology
 
 CTJ runs as two containers in a shared ECS task on the `incubator-prod` Fargate cluster:
@@ -13,7 +9,7 @@ CTJ runs as two containers in a shared ECS task on the `incubator-prod` Fargate 
 - **Next.js container** — serves the frontend (App Router pages, server components, server actions).
 - **Django container** — serves the CTJ API (`/api/*`) and the Django admin (`/admin/*`).
 
-Both containers share the task's network namespace, so cross-container calls hop localhost. The exact ingress topology — whether the ALB exposes both containers via path-based routing, or only Next.js with API/admin traffic proxied internally — is a DevOps decision and not yet finalized. **[Q7]**
+Both containers share the task's network namespace, so cross-container calls hop localhost. The ALB does path-based routing: `/api/*` and `/admin/*` go to a Django target group; everything else goes to a Next.js target group. Two target groups, both backed by the same ECS task. The browser sees a single origin (`stage.civictechjobs.org`) — CORS is a non-issue.
 
 External dependencies referenced at request time:
 
@@ -33,7 +29,7 @@ External dependencies referenced at request time:
 
 ## Deployment workflow
 
-The deploy workflow at [.github/workflows/deploy-stage.yml](https://github.com/hackforla/CivicTechJobs/blob/main/.github/workflows/deploy-stage.yml) runs on every push to `main` (excluding `mkdocs/**` and `dev/**` paths): **[Q5]**
+The deploy workflow at [.github/workflows/deploy-stage.yml](https://github.com/hackforla/CivicTechJobs/blob/main/.github/workflows/deploy-stage.yml) runs on every push to `main` (excluding `mkdocs/**` and `dev/**` paths):
 
 1. Assumes the `incubator-cicd-civic-tech-jobs` IAM role via GitHub OIDC — no static AWS credentials live in this repo.
 2. Logs into Amazon ECR.
@@ -44,13 +40,13 @@ There is no separate production workflow yet — `stage` is the only deployed en
 
 ## Environment variables
 
-Stage environment variables live in Terraform alongside the rest of the Incubator-managed configuration: see `environment-stage.tf` in [hackforla/incubator/terraform/projects/civic-tech-jobs](https://github.com/hackforla/incubator/tree/main/terraform/projects/civic-tech-jobs). **[Q8]**
+Stage environment variables live in Terraform alongside the rest of the Incubator-managed configuration: see [`environment-stage.tf`](https://github.com/hackforla/incubator/blob/main/terraform/projects/civic-tech-jobs/environment-stage.tf). CTJ-app-side env vars (Cognito values, future PeopleDepot values, app config) are typically updated by the CTJ maintainer; platform-level changes (launch type, networking, base infrastructure modules) are owned by the DevOps CoP. Both have edit access to the same module.
 
 Adding or editing an environment variable for the deployed app means changing the Terraform module — not editing anything in this repo. The local-dev equivalents in [dev/dev.env.example](https://github.com/hackforla/CivicTechJobs/blob/main/dev/dev.env.example) are kept loosely in sync but are not the source of truth for stage.
 
 Variables of note for the Next.js + Django split:
 
-- **Cognito** — pool ID, region, public-key URL (consumed by both containers). **[Q2]**
+- **Cognito** — `COGNITO_AWS_REGION` (`us-west-2`), `COGNITO_USER_POOL` (the user pool ID — `us-west-2_Fn4rkZpuB` for the shared `peopledepot` pool), `COGNITO_APP_CLIENT_ID` (the CTJ-specific app client ID). The JWKS URL is derived from region + pool ID at startup. Consumed by both containers; the Next.js container additionally exposes `NEXT_PUBLIC_COGNITO_CLIENT_ID` and the hosted-UI domain to the browser.
 - **PeopleDepot API** — base URL, auth credentials (consumed by both containers).
 - **Postgres** — `SQL_HOST`, `SQL_DATABASE`, `SQL_USER`, `SQL_PASSWORD`, `SQL_PORT` (Django container only).
 - **Next.js runtime** — `NEXT_PUBLIC_*` for browser-exposed values (e.g., Cognito client ID), private values for server actions.

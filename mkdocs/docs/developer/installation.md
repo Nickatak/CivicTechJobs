@@ -79,7 +79,7 @@ See [git-branch-structure.md](git-branch-structure.md) for the branching model.
 | `SQL_USER` | Same as `POSTGRES_USER` |
 | `SQL_PASSWORD` | Same as `POSTGRES_PASSWORD` |
 
-For Cognito and PeopleDepot variables (needed for auth + reference-data integration), see the relevant section in [deployment-infra.md](deployment-infra.md). **[Q4, Q23, Q24]** Local-dev contributors will hit unresolved questions about (a) how to authenticate against Django without a real Cognito flow, (b) how to call PeopleDepot without a dev account, and (c) how to bootstrap an admin / PM user. These need to resolve before the install flow is fully runnable end-to-end.
+Local-dev auth defaults to mock JWT verification (`AUTH_MODE=mock` in `dev.env.example`) so contributors don't need an AWS account to run the app. `createsuperuser` is the local-dev shortcut for admin access; the JWT path can be exercised by setting `AUTH_MODE=cognito` and pointing at PeopleDepot's existing `vrms-dev` pool. PeopleDepot reference data is also mock-by-default in stage 1 — see [backend.md → PeopleDepot integration](backend.md#peopledepot-integration). For deployed-stage Cognito and PeopleDepot variables, see [deployment-infra.md](deployment-infra.md). Admin bootstrap is via `python manage.py grant_staff` — see [backend.md → Admin bootstrap](backend.md#admin-bootstrap).
 
 ## Troubleshooting
 

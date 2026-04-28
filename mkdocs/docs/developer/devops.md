@@ -51,7 +51,7 @@ Three services:
 
 - **`pgdb`** — Postgres 16 with stage env vars.
 - **`django`** — Django stage container, built from `stage/django.dockerfile` (Poetry install, `collectstatic`, Daphne on port 8000).
-- **`next`** — Next.js stage container, built from `stage/next.dockerfile` (`npm run build`, Next.js production server on port 3000). Proxies `/api/*` and `/admin/*` to the `django` service. **[Q7, Q11]**
+- **`next`** — Next.js stage container, built from `stage/next.dockerfile` (`npm run build`, Next.js production server on port 3000). Proxies `/api/*` and `/admin/*` to the `django` service. (This is a local-stage approximation — deployed stage uses ALB path-based routing instead. See [deployment-infra.md](deployment-infra.md#topology).)
 
 ```sh
 docker compose -f docker-compose.stage.yml up
@@ -65,13 +65,16 @@ Lives at https://stage.civictechjobs.org/, built and deployed via [.github/workf
 
 ## Linting
 
-Run the pre-commit linters via the linter container:
+Lint runs at commit time via [pre-commit](https://pre-commit.com/). Install once on the host:
 
 ```sh
-docker compose run linter
+pip install pre-commit
+pre-commit install
 ```
 
-Configuration is in `.pre-commit-config.yaml`. Frontend ESLint / Prettier (`npm run lint` / `npm run format`) and backend Python lint (`isort`/`black`/`flake8`) are invoked as part of pre-commit hooks; see [eslint-guide.md](eslint-guide.md) and [backend.md](backend.md) for stack-specific lint commands. **[Q9, Q10]**
+After that, every `git commit` runs the configured hooks. Configuration is in [`.pre-commit-config.yaml`](https://github.com/hackforla/CivicTechJobs/blob/main/.pre-commit-config.yaml).
+
+Frontend lint (ESLint + Prettier) runs via `npm run lint` and `npm run format` against the Next.js project. Backend lint (`isort` / `black` / `flake8`) runs via pre-commit hooks reading config from `backend/pyproject.toml` and `backend/.flake8`. See [eslint-guide.md](eslint-guide.md) and [backend.md](backend.md) for ecosystem-specific commands.
 
 ## Useful Docker commands
 

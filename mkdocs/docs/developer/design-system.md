@@ -12,7 +12,7 @@ The CivicTechJobs Design System (CTJ-DS) is the shared visual + interaction lang
 | Styling | Tailwind CSS 4 |
 | Theme | CSS-first config via Tailwind 4's `@theme` directive |
 
-**[Q12]** Tailwind 4 is the assumed target. The current frontend is on Tailwind 3.4.17; the migration plan (clean rewrite vs. step-by-step) is unresolved.
+The Next.js frontend starts on Tailwind 4 from scratch. There is no in-place Tailwind 3 → 4 migration of the current Vite app — the Vite app is replaced wholesale by the Next.js rewrite, so the migration *is* the rewrite.
 
 The component system is **utility-first Tailwind + TypeScript-typed React components**. There is no SCSS, no CSS-modules, no separate component-library tool — Tailwind classes are the styling layer.
 
@@ -61,7 +61,7 @@ frontend/
 └── lib/                       # Utility functions
 ```
 
-**[Q14]** `AccordionFaq` (most recently-added component, PR #707) doesn't fit cleanly into the four groups above. Placement TBD — possible new `content/` group, fold into `ui/`, or treat as a one-off.
+`AccordionFaq` (added via PR #707) lives in the `ui/` group as a UI primitive — it's a collapsible-section interaction pattern, not domain-specific.
 
 Each component is a single `.tsx` file with a typed prop interface. No PropTypes (TypeScript types replace them).
 
@@ -123,4 +123,4 @@ Pick based on whether the SVG needs to react to props.
 - [React 19](https://react.dev/)
 - [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
 
-**[Q13]** Component documentation tool (Storybook, MDX, or stay with the existing `/demo` route under Next.js) is not specified. **[Q15]** The original design-system doc had multiple `<iframe>` CodeSandbox embeds for layout / spacing / responsive examples; the rewrite drops them. Worth deciding whether any are worth migrating.
+Components are documented in a `/demo` route within the Next.js app — same pattern the current Vite app uses (`frontend/src/pages/Demo/Demo.tsx` ports to `app/demo/page.tsx` in Next.js). No Storybook, no MDX-driven docs — the route-based approach keeps the operational footprint small.

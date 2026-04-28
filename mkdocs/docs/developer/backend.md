@@ -42,7 +42,7 @@ backend/
 
 ## Data model
 
-CTJ owns four concepts. Everything else is referenced by PeopleDepot UUID.
+CTJ owns four concepts in its end-state architecture. Reference data outside CTJ's skill-matching domain — user identity, practice areas, roles, projects — is sourced from PeopleDepot in the end state, with a phased integration during the rewrite (see [PeopleDepot integration](#peopledepot-integration)).
 
 - **Skill** — CTJ-managed skill taxonomy. Fields: `name` (unique), `description`, and an array of practice-area PeopleDepot UUIDs (skills can be relevant across multiple CoPs). Curated through Django admin so the matching list can be tailored to CTJ's purposes rather than tracking PeopleDepot's broader skill data.
 - **SkillMatrix** — JSON field mapping `{skill_uuid: mastery_level(1-5)}`. Skill UUIDs reference local `Skill` records; mastery levels are user-supplied. Shared between users (skills they have) and opportunities (skills they require) — it's the data structure the matching algorithm operates on.
@@ -75,10 +75,10 @@ Authentication is delegated to AWS Cognito — the same user pool that backs Peo
 
 Flow:
 
-1. User signs into Cognito via the Next.js frontend.
-2. Next.js receives a JWT and validates it in middleware.
-3. For protected mutations, Next.js server actions forward the validated JWT to this API in the `Authorization: Bearer <token>` header.
-4. A custom DRF authentication backend in [backend/ctj_api/auth.py](https://github.com/hackforla/CivicTechJobs/blob/main/backend/ctj_api/auth.py) verifies the token signature against Cognito's public keys and extracts the `sub` claim — the canonical user identifier shared between CTJ and PeopleDepot. **[Q2]**
+1. User signs into Cognito via the Next.js frontend using the Authorization Code + PKCE flow against Cognito's hosted UI.
+2. Next.js exchanges the authorization code for tokens, stores them server-side, and validates the ID token in middleware.
+3. For protected mutations, Next.js server actions forward the access token to this API in the `Authorization: Bearer <token>` header.
+4. A custom DRF authentication backend in [backend/ctj_api/auth.py](https://github.com/hackforla/CivicTechJobs/blob/main/backend/ctj_api/auth.py) verifies the JWT signature using `PyJWT` against Cognito's public keys (fetched at startup from the JWKS endpoint derived from `COGNITO_AWS_REGION` + `COGNITO_USER_POOL`, cached in-process), validates `iss`, `aud`, and `exp`, and extracts `sub` — the canonical user identifier shared between CTJ and PeopleDepot. The `sub` resolves to a local `UserProfile` row (created on first authentication if absent).
 
 ## Permissions
 
@@ -89,7 +89,7 @@ Custom DRF permission classes in [backend/ctj_api/permissions.py](https://github
 
 Skill taxonomy mutation is gated by Django admin's built-in staff permission, not a separate DRF class — the API only exposes `GET /api/skills/`.
 
-PM status comes from the `is_project_manager` flag on the local `UserProfile` (renamed from `isProjectManager` to match Python conventions). It is set by an existing admin through Django admin. **[Q4]**
+PM status comes from the `is_project_manager` flag on the local `UserProfile` (renamed from `isProjectManager` to match Python conventions). An existing admin sets the flag through Django admin. The first admin in any environment is bootstrapped via the `grant_staff` management command — see [Admin bootstrap](#admin-bootstrap) below.
 
 ## Django admin as CMS
 
@@ -98,9 +98,26 @@ Django admin at `/admin/` is the management interface for two CTJ-owned domains:
 - **Opportunities** — PMs create and update opportunities directly.
 - **Skill taxonomy** — admins curate the list of skills (add, edit, remove), set descriptions, and associate skills with PeopleDepot practice-area UUIDs.
 
-Admins sign in with Cognito (admin auth uses the same custom JWT backend, gated to users with the staff flag).
+Admins sign in with Cognito and reach Django admin via `UserProfile.is_staff` — a CTJ-local boolean separate from `is_project_manager`. The JWT carries no staff claim; staff status is asserted within CTJ. The first admin in any environment is bootstrapped via the `grant_staff` management command (see [Admin bootstrap](#admin-bootstrap) below); subsequent admin and PM promotions happen through Django admin's UI.
 
 Reference data outside CTJ's scope — practice areas, roles, projects, user identity — is **not** manageable through CTJ's admin. Those are owned by PeopleDepot and managed there.
+
+## Admin bootstrap
+
+The first admin in any environment cannot be created through Django admin (no admin exists yet). CTJ ships a management command for the bootstrap:
+
+```
+python manage.py grant_staff --sub <cognito_sub>
+python manage.py grant_staff --email <cognito_email>
+```
+
+The command sets `is_staff = True` on the `UserProfile` row matching the given identifier. The row must already exist — it's created on first Cognito sign-in.
+
+**Production workflow:** the first admin signs up via Cognito hosted UI normally, signs into CTJ once (which triggers the JWT auth backend to create their `UserProfile`), then an operator runs `grant_staff` from a deployed-environment shell (e.g., AWS ECS Exec into the Django container).
+
+**Local-dev workflow:** depends on the local-auth strategy (see [installation.md](installation.md)). With mocked JWT verification, `python manage.py createsuperuser` is the shortcut — `UserProfile` is `AUTH_USER_MODEL`, so the standard Django command works. With a real Cognito dev pool, the workflow matches production.
+
+Once one admin exists, all subsequent admin and PM elevations happen through Django admin's UI.
 
 ## Frontend integration
 
@@ -113,27 +130,32 @@ Server components and server actions in Next.js aggregate both sources in a sing
 
 The qualifier flow exemplifies the split: the user's CoP selection draws from PeopleDepot's practice-areas endpoint, the skills they rate come from CTJ's `/api/skills/` endpoint, and the resulting SkillMatrix is saved to the user's CTJ `UserProfile`.
 
-There is no `frontend_dist/` build copy. The Next.js container is deployed alongside Django in the same ECS task; see [deployment-infra.md](deployment-infra.md) for the deployment topology. **[Q7]**
+There is no `frontend_dist/` build copy. The Next.js container is deployed alongside Django in the same ECS task; see [deployment-infra.md](deployment-infra.md) for the deployment topology.
 
 ## PeopleDepot integration
 
-CTJ depends on PeopleDepot for reference data outside its skill-matching domain: **[Q3]**
+CTJ's end state depends on [PeopleDepot](https://github.com/hackforla/peopledepot) — HfLA's central directory — for reference data outside its skill-matching domain:
 
 - **User identity** — Cognito subjects map 1:1 to PeopleDepot user records (name, email, basic profile).
 - **Practice areas (Communities of Practice)** — taxonomy and descriptions.
-- **Role / job-title taxonomy.**
+- **Role / job-title taxonomy** — PeopleDepot's term is `ModernJobTitle`.
 - **Project metadata** — project name, meeting times, status, etc.
 
-CTJ stores PeopleDepot UUIDs as references (e.g., `Opportunity.project_id` is a PeopleDepot project UUID, not a Django foreign key). The PeopleDepot client at [backend/ctj_api/clients/peopledepot.py](https://github.com/hackforla/CivicTechJobs/blob/main/backend/ctj_api/clients/peopledepot.py) wraps the relevant PeopleDepot endpoints with typed Python interfaces.
+**Phased integration.** PeopleDepot's prod deployment is not yet complete ([Issue #218](https://github.com/hackforla/peopledepot/issues/218) tracks it), so the rewrite splits the integration into two phases:
+
+- **Phase A** — implement a `PeopleDepotClient` interface in [backend/ctj_api/clients/peopledepot.py](https://github.com/hackforla/CivicTechJobs/blob/main/backend/ctj_api/clients/peopledepot.py). The interface exposes typed methods (`get_user`, `get_practice_areas`, `get_project`, `get_modern_job_titles`) shaped after PeopleDepot's published OpenAPI schema (generated by `drf-spectacular`). Phase-A implementations read from local Django models — the reference-data tables (`CommunityOfPractice`, `Role`-equivalent, `Project`, the user-identity model) stay in CTJ for now.
+- **Phase B** — gated on PeopleDepot's prod deployment. Swap the `PeopleDepotClient` implementation for live calls to PeopleDepot's `/api/v1/` endpoints. Drop the local reference-data models. CTJ's domain code doesn't change; only the client implementation does.
+
+CTJ stores PeopleDepot UUIDs as references throughout (e.g., `Opportunity.project_id` is a UUID that resolves through `PeopleDepotClient` — to a local row in phase A, to a PeopleDepot record in phase B).
 
 ## What's not built yet
 
-These gaps are part of the stage-2 backend rewrite:
+These gaps are part of the stage-2 backend rewrite, split into phases per [PeopleDepot integration](#peopledepot-integration):
 
-- **Cognito JWT authentication backend** — `auth.py` needs to be implemented.
-- **PeopleDepot client** — `clients/peopledepot.py` needs to be implemented.
+- **Cognito JWT authentication backend** — `auth.py` needs to be implemented (phase A).
+- **PeopleDepot client** — `clients/peopledepot.py` needs to be implemented (interface + local-model implementation in phase A; live-API implementation in phase B).
 - **Data model migration:**
-    - `CommunityOfPractice`, `Role`, `Project`, `CustomUser` models removed (data sourced from PeopleDepot)
+    - `CommunityOfPractice`, `Role`, `Project`, `CustomUser` models **retained in phase A; removed in phase B** when the `PeopleDepotClient` swaps to live API calls
     - `Skill` retained: gains a `description` field; M2M to local `CommunityOfPractice` replaced with an array of PeopleDepot CoP UUIDs
     - `UserProfile` introduced as a thin per-user anchor, replacing `CustomUser`; `isProjectManager` renamed to `is_project_manager`
     - `Opportunity` retained: `project` and `role` FKs become PeopleDepot UUID references; `created_by` FK now points to `UserProfile`
