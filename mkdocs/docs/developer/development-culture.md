@@ -6,7 +6,7 @@ The CivicTechJobs developer workflow has three core activities:
 - Resolve issues
 - Review code
 
-This guide covers expectations and conventions for each. For mechanics (forking, branching, opening PRs), see [CONTRIBUTING.md](https://github.com/hackforla/CivicTechJobs/blob/main/CONTRIBUTING.md). *(Note: CONTRIBUTING.md still references the old project board and `main`-as-base-branch; a follow-up PR reconciles it.)*
+This guide covers expectations and conventions for each. For mechanics (forking, branching, opening PRs), see [CONTRIBUTING.md](https://github.com/hackforla/CivicTechJobs/blob/main/CONTRIBUTING.md).
 
 ## Make issues
 
@@ -36,7 +36,7 @@ Mechanics:
 
 If an issue is taking significantly longer than its size suggests, post an update on the issue with an ETA and an honest read on whether you can finish. It's better to release an issue back to the backlog than to block on a stalled task.
 
-**Don't ping for review until 72 hours after opening a PR.** The team sweeps PRs on its own cadence; pinging earlier creates noise. If you're done with one task and waiting for review, pick up another issue or review someone else's PR.
+PRs are picked up at the team's checkpoint cadence — no need to ping. If you're waiting on review and want to keep moving, pick up another issue or review someone else's PR.
 
 ### Frontend vs backend issues
 

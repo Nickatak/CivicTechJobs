@@ -1,60 +1,38 @@
-# Welcome to the CivicTechJobs Contributing Guide
+# Contributing to CivicTechJobs
 
-> Note: This guide is for developers. If you are looking to contribute as a project manager, UI designer or UX researcher, please [join our organization as a volunteer](https://hackforla.github.io/CivicTechJobs/joining-the-team/intro/) and then request to join our team!
+CivicTechJobs is a [Hack for LA](https://www.hackforla.org/) project. Before contributing, please read the Hack for LA [code of conduct](https://github.com/hackforla/codeofconduct).
 
-Thank you for investing your time to our project. Anything you contribute will be reflected on our repository at [hackforla/civictechjobs](https://github.com/hackforla/CivicTechJobs).
+The maintainer team reviews issues and pull requests at our regular checkpoint meetings — that's the cadence to expect for triage and review. You don't need to ping; open work gets picked up on that schedule.
 
-Before starting, make sure you read our [code of conduct](https://github.com/hackforla/codeofconduct). Also, consider [joining our team as a volunteer](https://hackforla.github.io/CivicTechJobs/joining-the-team/intro/), especially if you enjoyed contributing to us. This gives you access to our developer meetings and slack channel so that you can influence the direction of the project on a much greater level.
+This guide covers the mechanics. For the *why* behind issue style and review criteria, see the [development culture guide](https://hackforla.github.io/CivicTechJobs/developer/development-culture/).
 
-This guide outlines the three ways you can contribute to us as a developer: creating issues, resolving issues, or reviewing a pull requests as either a team member or freelancer.
+## Setting up your environment
 
-Pro tip: Use the table of contents in the top-left corner to jump to specific sections of this guide.
+Follow the [installation instructions](https://hackforla.github.io/CivicTechJobs/developer/installation/) before starting work. The dev environment runs via `docker compose`.
 
-Is this your first time working on open source projects? Check out this video [series](https://app.egghead.io/playlists/how-to-contribute-to-an-open-source-project-on-github).
+## Filing issues
 
-## Contributing to our project
+Open an issue from the [new issue screen](https://github.com/hackforla/CivicTechJobs/issues/new/choose) using the appropriate template (the [Blank Issue](https://github.com/hackforla/CivicTechJobs/issues/new?assignees=&labels=&template=blank-issue.md&title=) form is fine for most things).
 
-Note: "(team member)" and "(freelancer)" are used at the beginning of an instruction to identify a step specific to one or the other.
+A good issue describes the situation, the desired outcome, and enough context that someone else could pick it up cold. Add at least one **size**, **role**, and **feature** label — leave labeling open if nothing fits and a maintainer will fill it in during triage.
 
-### Creating Issues
+New issues land on the [Hack for LA project board](https://github.com/orgs/hackforla/projects/37) and get prioritized there.
 
-Locate the appropriate template for your issue from the [new issue screen](https://github.com/hackforla/CivicTechJobs/issues/new/choose) or by clicking the New Issue button from the [Issues tab](https://github.com/hackforla/CivicTechJobs/issues). The [Blank Issue](https://github.com/hackforla/CivicTechJobs/issues/new?assignees=&labels=&template=blank-issue.md&title=) or the more detailed [form version](https://github.com/hackforla/CivicTechJobs/issues/new?assignees=&labels=&template=blank-issue-form.yml) are always appropriate.
+## Submitting a pull request
 
-(team member) If you need help, feel free to consult your development lead or other members of the team.
+1. Find an issue in the **Prioritized Backlog** column on the [project board](https://github.com/orgs/hackforla/projects/37). The **size** label is the rough time commitment; the **role** label says where the work lives.
+2. Comment on the issue to claim it; assign yourself.
+3. Fork the repo, then branch off `develop` (not `main`). See [git-branch-structure.md](https://hackforla.github.io/CivicTechJobs/developer/git-branch-structure/).
+4. Make your changes.
+5. Open a PR against `develop` from your fork, following the [PR template](https://github.com/hackforla/CivicTechJobs/blob/main/.github/pull_request_template.md).
+6. Confirm the automated checks pass (bottom of the PR view).
 
-### Resolving Issues
+Frontend styling uses **CSS Modules** — co-locate a `Component.module.css` next to each component's `.tsx` file. No Tailwind, no styled-components, no CSS-in-JS runtime. See the [design system guide](https://hackforla.github.io/CivicTechJobs/developer/design-system/) for the full conventions.
 
-> **Note: Make sure to check out our [installation instructions](https://hackforla.github.io/CivicTechJobs/developer/installation/) to set up your development environment before working on any issues!**
+If an issue takes much longer than its size suggested, post an update on the issue with an honest read on whether you can finish — releasing it back to the backlog is fine.
 
-1. Find a developer issue to work on from our [prioritized backlog](https://github.com/hackforla/CivicTechJobs/projects/1#column-10928271). (Hint: look for the `frontend` or `backend` label). The `size` label will signal the amount of work the issue might involve, with a higher number indicating greater work. We encourage you to take the topmost `frontend` or `backend` issue, as they are arranged by priority by role.
-2. Indicate you are working on the issue as follows:
-   - (team member) Assign yourself to the issue. (Hint: see [step 4 of this GitHub article](https://docs.github.com/en/issues/tracking-your-work-with-issues/assigning-issues-and-pull-requests-to-other-github-users#assigning-an-individual-issue-or-pull-request).)
-   - (freelancer) If you expect the issue will take more than a day to complete, add a comment to the bug indicating you are working on the bug
-3. (team member) Move the issue from the prioritized backlog to the [in progress](https://github.com/hackforla/CivicTechJobs/projects/1#column-10928272) column. (Hint, see [step 5 of this GitHub article](https://docs.github.com/en/issues/organizing-your-work-with-project-boards/tracking-work-with-project-boards/adding-issues-and-pull-requests-to-a-project-board#adding-issues-and-pull-requests-to-a-project-board-from-the-sidebar).)
-4. [From your local fork, create a branch off of main.](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
-5. Make changes on that branch for your issue.
-6. [Create a pull request from your fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork). After you had opened the pull request, there will be instructions on the [pull request template](https://github.com/hackforla/CivicTechJobs/blob/main/.github/pull_request_template.md?plain=1) for you to follow.
-7. Check that all the automated checks have passed. This is at the bottom of the pull request.
-8. Done! Now just wait for a team member to get back to you with feedback on your changes! <br/>
-   (team member) To take on another issue, please ask the development lead for an appropriate additional issue to take on.
+First time contributing to open source? This [video series](https://app.egghead.io/playlists/how-to-contribute-to-an-open-source-project-on-github) is a useful starter.
 
-> Important note 1: **We do not want to be flooded with pull requests!** Please, do **NOT** take on another issue or open a second pull request until your current pull request and linked issue are resolved by a team member.
+## Additional resources
 
-> Important note 2: **Do not directly contact the team to review your pull request unless it has been over 72 hours since the pull request was opened.** As an open-source project, the team contribute to the project in their free time, which varies from week to week, day to day. Feel free to ask any questions, however!
-
-### Reviewing Code
-
-To review code, please take a look at this [guide from another project](https://github.com/hackforla/website/wiki/How-to-Review-Pull-Requests). Not all the information there will be relevant to this project, but it should nonetheless get you started.
-
-## Frequently Asked Questions
-
-### Error Messages
-
-<details>
-<summary>1. error: insufficient permission for adding an object to repository database </summary>
-<br>
-You must have created a new file, through Docker. Since this file "belongs" to the container, you need to transfer permission by running, <code>sudo chown -R $USER:$USER .</code>. (See <a href='https://docs.docker.com/samples/django/#create-a-django-project'>step 3</a> for more info.)
-<br>
-</details>
-
-## [Additional Resources](https://hackforla.github.io/CivicTechJobs/resources/#for-developers)
+[Resources for developers](https://hackforla.github.io/CivicTechJobs/resources/#for-developers).
