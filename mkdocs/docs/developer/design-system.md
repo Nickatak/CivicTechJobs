@@ -9,12 +9,12 @@ The CivicTechJobs Design System (CTJ-DS) is the shared visual + interaction lang
 | Framework | Next.js 15 (App Router) |
 | Library | React 19 |
 | Types | TypeScript 5 |
-| Styling | Tailwind CSS 4 |
-| Theme | CSS-first config via Tailwind 4's `@theme` directive |
+| Styling | CSS Modules (Next.js built-in) |
+| Theme | CSS custom properties in `app/globals.css` |
 
-The Next.js frontend starts on Tailwind 4 from scratch. There is no in-place Tailwind 3 → 4 migration of the current Vite app — the Vite app is replaced wholesale by the Next.js rewrite, so the migration *is* the rewrite.
+The Next.js frontend uses Next.js's built-in CSS Modules support — no Tailwind, no styled-components, no CSS-in-JS runtime. Each component co-locates a `Component.module.css` next to its `.tsx` file; class names are scoped to the component automatically.
 
-The component system is **utility-first Tailwind + TypeScript-typed React components**. There is no SCSS, no CSS-modules, no separate component-library tool — Tailwind classes are the styling layer.
+The component system is **CSS-Modules-styled + TypeScript-typed React components**.
 
 ## Source of truth
 
@@ -22,27 +22,28 @@ Figma is canonical for visual decisions. Any divergence between code and Figma i
 
 - Use the design tokens (colors, typography, spacing) Figma exposes — not eyeballed values.
 - Implement at the two anchor viewports: **1440px (desktop)** and **375px (mobile)**.
-- Behavior between those breakpoints is the developer's call, guided by Tailwind's responsive utilities.
+- Behavior between those breakpoints is the developer's call, guided by the breakpoint custom properties.
 
 ## Theme tokens
 
-Theme values (colors, typography, spacing scale, breakpoints) are declared in CSS via Tailwind 4's `@theme` directive. The design system's tokens are co-located with the global CSS:
+Theme values (colors, typography, spacing scale, breakpoints) live as CSS custom properties in the global stylesheet:
 
 ```css
 /* frontend/app/globals.css */
-@import "tailwindcss";
-
-@theme {
+:root {
   --color-primary: ...;
   --color-primary-dark: ...;
   --font-family-sans: ...;
   --font-size-display: ...;
   --breakpoint-tablet: 768px;
   --breakpoint-desktop: 1024px;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  /* etc. */
 }
 ```
 
-These map 1:1 to Figma's design tokens. Adding a new token means adding it to Figma first, then mirroring the value in `globals.css`.
+These map 1:1 to Figma's design tokens. Adding a new token means adding it to Figma first, then mirroring the value in `globals.css`. Components consume tokens via `var(--token-name)` in their module CSS.
 
 ## Component library structure
 
@@ -50,20 +51,57 @@ Components live at `frontend/components/`, organized by purpose:
 
 ```
 frontend/
-├── app/                       # App Router pages, layouts, route handlers
-│   └── globals.css            # Tailwind import + @theme
+├── app/                              # App Router pages, layouts, route handlers
+│   └── globals.css                   # Global CSS custom properties (theme tokens)
 ├── components/
-│   ├── ui/                    # Atoms (Button, Checkbox, TextField, Typography)
-│   ├── nav/                   # Header / footer / auth nav
-│   ├── cards/                 # Card variants (Standard, Circle)
-│   ├── feedback/              # Dialog, Cookie banner, etc.
-│   └── index.ts               # Barrel export
-└── lib/                       # Utility functions
+│   ├── ui/                           # Atoms (Button, Checkbox, TextField, Typography)
+│   │   └── Button/
+│   │       ├── Button.tsx
+│   │       └── Button.module.css     # Component-scoped styles
+│   ├── nav/                          # Header / footer / auth nav
+│   ├── cards/                        # Card variants (Standard, Circle)
+│   ├── feedback/                     # Dialog, Cookie banner, etc.
+│   └── index.ts                      # Barrel export
+└── lib/                              # Utility functions
 ```
+
+Each component is a `.tsx` file with a typed prop interface, paired with a `.module.css` for styles. No PropTypes (TypeScript types replace them).
 
 `AccordionFaq` (added via PR #707) lives in the `ui/` group as a UI primitive — it's a collapsible-section interaction pattern, not domain-specific.
 
-Each component is a single `.tsx` file with a typed prop interface. No PropTypes (TypeScript types replace them).
+## CSS Modules basics
+
+Each component imports its module styles:
+
+```tsx
+// frontend/components/ui/Button/Button.tsx
+import styles from "./Button.module.css";
+
+type ButtonProps = {
+  variant?: "primary" | "secondary";
+  children: React.ReactNode;
+};
+
+export function Button({ variant = "primary", children }: ButtonProps) {
+  return <button className={styles[variant]}>{children}</button>;
+}
+```
+
+```css
+/* frontend/components/ui/Button/Button.module.css */
+.primary {
+  background: var(--color-primary);
+  color: white;
+}
+
+.secondary {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid currentColor;
+}
+```
+
+Class names are scoped automatically — `.primary` in one module does not collide with `.primary` in another.
 
 ## Server vs client components
 
@@ -78,17 +116,33 @@ For example, `Typography` and `StandardCard` are server components; `Dialog` and
 
 ## Responsive design
 
-Use Tailwind's responsive utilities (`sm:`, `md:`, `lg:`, etc.) directly on elements. Avoid writing custom media queries — the breakpoints in `@theme` are the source of truth.
+Write media queries in module CSS. The breakpoints in `globals.css` are the source of truth:
 
-For the rare component that needs both **scalable** behavior (smoothly grows with the viewport) and **responsive** behavior (snaps at a breakpoint), combine percentage / fractional units with breakpoint utilities:
+```css
+/* Card.module.css */
+.card {
+  width: 100%;
+  padding: var(--space-4);
+}
 
-```tsx
-<div className="w-full md:w-1/2 lg:w-1/3 px-4 md:px-6 lg:px-8">
-  ...
-</div>
+@media (min-width: 768px) {
+  .card {
+    width: 50%;
+    padding: var(--space-6);
+  }
+}
+
+@media (min-width: 1024px) {
+  .card {
+    width: 33.33%;
+    padding: var(--space-8);
+  }
+}
 ```
 
-The earlier 12-column SCSS system is replaced by Tailwind's `grid-cols-*` and `flex` utilities.
+For elements that need both **scalable** behavior (smoothly grows with the viewport) and **responsive** behavior (snaps at a breakpoint), combine fractional widths with media queries as above.
+
+The earlier 12-column SCSS system is replaced by CSS Grid (`display: grid; grid-template-columns: repeat(12, 1fr);`) and Flexbox layouts written directly in module CSS.
 
 ## SVG assets
 
@@ -96,8 +150,9 @@ Two patterns:
 
 - **As React components** — for SVGs that need props (e.g., theme-driven fill colors). Configure SVGR or Next.js's built-in SVG support and import as a React component:
     ```tsx
+    import styles from "./Header.module.css";
     import Logo from "@/assets/logo.svg";
-    <Logo className="text-primary w-32 h-8" />
+    <Logo className={styles.logo} />
     ```
 - **As `<Image>` source** — for static SVGs displayed at known sizes. Use `next/image`:
     ```tsx
@@ -118,7 +173,7 @@ Pick based on whether the SVG needs to react to props.
 ## Resources
 
 - [Figma file](https://www.figma.com/file/G5bOqhud6azbxyR9El9Ygp/Civic-Tech-Jobs)
-- [Tailwind CSS 4 documentation](https://tailwindcss.com/docs)
+- [Next.js CSS Modules](https://nextjs.org/docs/app/building-your-application/styling/css-modules)
 - [Next.js App Router](https://nextjs.org/docs/app)
 - [React 19](https://react.dev/)
 - [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)

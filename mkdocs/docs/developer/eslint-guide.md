@@ -12,7 +12,6 @@ The frontend is linted with ESLint 9 (flat config) and formatted with Prettier. 
 | TypeScript rules | `typescript-eslint` |
 | React Hooks rules | `eslint-plugin-react-hooks` |
 | Accessibility rules | `eslint-plugin-jsx-a11y` |
-| Tailwind rules | `eslint-plugin-tailwindcss` v4+ (Tailwind 4 compatible) |
 
 ## Rule highlights
 
@@ -38,12 +37,6 @@ The full rule list is in `eslint.config.mjs`. Notable rules:
 **TypeScript**
 
 - `@typescript-eslint/no-unused-vars` — error (stricter than the plain JS version)
-
-**Tailwind**
-
-- `tailwindcss/no-contradicting-classname` — error (e.g., `text-left text-right`)
-- `tailwindcss/no-unnecessary-arbitrary-value` — error (use theme tokens instead of `[16px]`)
-- `tailwindcss/classnames-order` — error (consistent class ordering)
 
 **Accessibility (jsx-a11y)**
 
