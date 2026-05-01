@@ -26,3 +26,6 @@ dev/linter.env
 # static build files
 backend/frontend_dist
 backend/staticfiles
+
+# Personal scratch notes — Nick's working dir for planning / Q&A drafts. Not for commit.
+scratch/
