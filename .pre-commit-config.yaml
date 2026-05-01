@@ -42,7 +42,7 @@ repos:
     rev: "v2.15.10"
     hooks:
       - id: pylint
-        exclude: "[a-zA-Z]*/(migrations)/(.)*|(mkdocs)/(.)*"
+        exclude: "[a-zA-Z]*/(migrations)/(.)*|(docs)/(.)*"
         args:
           [
             "--load-plugins=pylint_django",

@@ -15,9 +15,9 @@ This issue has been created for our new Developer [PLEASE ADD WHETHER FRONT-END 
 ### Action Items
 
 - [ ] Review [Read Me Page](https://github.com/hackforla/CivicTechJobs)
-- [ ] Review [Mk Docs Project Documentation](https://hackforla.github.io/CivicTechJobs/) - please note we are working on updating this
+- [ ] Review [Project Documentation](https://github.com/hackforla/CivicTechJobs/tree/develop/docs)
 - [ ] Review [Wiki Onboarding [Start Here]](https://github.com/hackforla/CivicTechJobs/wiki/Onboarding-%5BStart-Here%5D)
-- [ ] Follow this guide to install the required downloads and set up a development environment: https://hackforla.github.io/CivicTechJobs/developer/installation/
+- [ ] Follow this guide to install the required downloads and set up a development environment: https://github.com/hackforla/CivicTechJobs/blob/develop/docs/developer/installation.md
 
 Tasks
 
@@ -26,4 +26,4 @@ Tasks
 
 ### Resources
 
-- [Resources](https://hackforla.github.io/CivicTechJobs/resources/)
+- [Resources](https://github.com/hackforla/CivicTechJobs/blob/develop/docs/resources.md)
